@@ -1,0 +1,9 @@
+.image-upload-container .image-part{
+	margin-bottom: 20px;
+}
+.image-upload-container .fileNotExist .img-exist{
+	display: none;
+}
+.image-upload-container .fileExist .img-not-exist{
+	display: none;
+}
