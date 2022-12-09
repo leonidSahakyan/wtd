@@ -1,9 +1,0 @@
-.image-upload-container .image-action{
-	margin-top: 13px;
-}
-.image-upload-container .fileNotExist .img-exist{
-	display: none;
-}
-.image-upload-container .fileExist .img-not-exist{
-	display: none;
-}

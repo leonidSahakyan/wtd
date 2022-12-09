@@ -118,11 +118,12 @@ class ImageDB extends Model
 
         if($image->move('content/', $filename.'.'.$ext)){
             $data = array();
+            $set_primary = false;
             if($gallery_id){
                 $data['parent_id'] = $gallery_id;
-
+                
                 $max = DB::table('images')->where('parent_id', $gallery_id)->max('ordering');
-                $data['ordering'] = (is_null($max) ? 0 : $max + 1);
+                $data['ordering'] = $has_primary = (is_null($max) ? 0 : $max + 1);
             }
             if($temp){
                 $tempStoreUntil = time() + (3 * 24 * 60 * 60);
@@ -135,7 +136,9 @@ class ImageDB extends Model
             $data['updated_at'] = \Carbon\Carbon::now()->toDateTimeString();
 
             $id = DB::table('images')->insertGetId($data);
-
+            if($gallery_id && !$has_primary){
+                DB::table('product')->where('gallery_id', $gallery_id)->update(['image_id' => $id]);
+            }
             return $this->get($id);
         }
         return false;
@@ -152,6 +155,20 @@ class ImageDB extends Model
 
     public function remove($imageId){
         $image = ImageDB::find($imageId);
+        
+        // If this image is primary
+        if($image->parent_id){
+            $product = DB::table('product')->select('id','image_id')->where('gallery_id', $image->parent_id)->first();
+            if($product && $product->image_id == $image->id){
+                $otherImage = DB::table('images')->select('id')->where('parent_id', $image->parent_id)->where('id','!=',$image->id)->orderBy('ordering','ASC')->first();
+                if($otherImage){
+                    DB::table('product')->where('id', $product->id)->update(['image_id' => $otherImage->id]);
+                }else{
+                    DB::table('product')->where('id', $product->id)->update(['image_id' => null,'status' => 0]);
+                }
+            }   
+        }
+
         if($image){
             $path = 'content/'.$image->filename.'.'.$image->ext;
             File::delete($path);

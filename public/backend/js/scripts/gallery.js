@@ -1,3 +1,4 @@
+
 var Gallery = function () {
     var self;
     var galleryOptions;
@@ -72,7 +73,6 @@ var Gallery = function () {
                       // Create the remove button
                       var removeButton = Dropzone.createElement("<button class='btn btn-info removeImage btn-xs btn-block'>Remove</button>");
 
-                      //var sortable = '<div class="portlet-sortable-empty"></div>';
                       
                       // Capture the Dropzone instance as closure.
                       var _this = this;
@@ -88,7 +88,6 @@ var Gallery = function () {
                         // If you want to the delete the file on the server as well,
                         // you can do the AJAX request here.
                         removeImageId = $(file.previewElement).filter('.dz-preview').attr('imageId');
-                        console.log(removeImageId)
                         if(removeImageId){
                           // Remove from server and db
                           $.ajax({
@@ -114,7 +113,7 @@ var Gallery = function () {
                     var self = this;
                     uploadedImagesCount = 0;
                     $.each($uploadedImages, function( index, value ) {                      
-                      var mockFile = { name: value.title, id:value.id };//size: value.size,
+                      var mockFile = { name: value.title, id:value.id, color:value.color };//size: value.size,
                       self.emit("addedfile", mockFile);
                       self.emit("thumbnail", mockFile, value.path);
                       
@@ -180,52 +179,57 @@ var Gallery = function () {
         },
 
         initSorting: function(){
-          //  $(galleryOptions.container).sortable({
-          //       // connectWith: ".dz-image-preview",
-          //       items: ".dz-image-preview", 
-          //       opacity: 0.8,
-          //       coneHelperSize: true,
-          //       placeholder: 'gallery-sortable-placeholder',
-          //       forcePlaceholderSize: true,
-          //       tolerance: "pointer",
-          //       helper: "clone",
-          //       tolerance: "pointer",
-          //       forcePlaceholderSize: !0,
-          //       revert: 250, // animation in milliseconds
-          //       update: function(event, ui) {
-          //           var ids = new Array();
-          //           $(galleryOptions.container+' .dz-image-preview').each(function(index) {
-          //             ids.push($(this).attr('imageid'));
-          //           });
+          $(galleryOptions.container).sortable({
+              // connectWith: ".dz-image-preview",
+              items: ".dz-image-preview", 
+              opacity: 0.8,
+              coneHelperSize: true,
+              placeholder: 'gallery-sortable-placeholder',
+              forcePlaceholderSize: true,
+              tolerance: "pointer",
+              helper: "clone",
+              tolerance: "pointer",
+              forcePlaceholderSize: !0,
+              revert: 250, // animation in milliseconds
+              update: function(event, ui) {
+                  var ids = new Array();
+                  $(galleryOptions.container+' .dz-image-preview').each(function(index) {
+                    ids.push($(this).attr('imageid'));
+                  });
 
-          //           $.ajax({
-          //             type: "POST",
-          //             url: '/admin/image/sort',
-          //             dataType: 'JSON',
-          //             data:{_token: galleryOptions._token, ids:ids}
-          //         });                
-          //       },
-          //       start: function( event, ui ) {
-          //         $(".dz-clickable").css( 'pointer-events', 'none' );
-          //       },
-          //       stop: function( event, ui ) {
-          //         $(".dz-clickable").css( 'pointer-events', true);
-          //       }
-          //   });
+                  $.ajax({
+                    type: "POST",
+                    url: '/admin/gallery-sort',
+                    dataType: 'JSON',
+                    data:{_token: galleryOptions._token, ids:ids}
+                });                
+              },
+              start: function( event, ui ) {
+                $(".dz-clickable").css( 'pointer-events', 'none' );
+              },
+              stop: function( event, ui ) {
+                $(".dz-clickable").css( 'pointer-events', 'auto');
+              }
+          });
         },
 
         appendEdit:function(file){
           if(galleryOptions.edit){
-            var editButton =  Dropzone.createElement("<button class='btn btn-sm btn-block'>Edit</button>");
-            editButton.addEventListener("click", function(e) {
+            colors = ['black','white','blue','green','red'];
+            selectHtml = "<select class='custom-select-uploader'><option value=''>None</option>";
+            colors.forEach(element => selectHtml += '<option '+(file.color == element ? 'selected' : '')+'  value="'+element+'">'+element+'</option>');
+            selectHtml += "</select>";
+            var editButton =  Dropzone.createElement(selectHtml);
+            editButton.addEventListener("change", function(e) {
               editImageId = $(file.previewElement).filter('.dz-preview').attr('imageId');
+              color = $(editButton).val();
               // Make sure the button click doesn't submit the form:
               e.preventDefault();
               e.stopPropagation();
               
               var editFn = window[galleryOptions.edit];
               if(typeof editFn === 'function') {
-                editFn(editImageId);
+                editFn(editImageId,color);
               }
               
             });

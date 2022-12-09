@@ -55,8 +55,8 @@ return array(
     'templates' => array(
         'backendSmall' => 'App\Filters\Image\BackendSmall',
         'avatar' => 'App\Filters\Image\Avatar',
-        'galleryList' => 'App\Filters\Image\GalleryList',
-        'homeslider' => 'App\Filters\Image\HomeSlider',
+        'productList' => 'App\Filters\Image\ProductList',
+        'slider' => 'App\Filters\Image\Slider',
         'services' => 'App\Filters\Image\Services',
         'document' => 'App\Filters\Image\Document',
     ),

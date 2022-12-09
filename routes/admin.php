@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\MetaController;
 use App\Http\Controllers\Admin\ServicesController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Middleware\SuperAdmin;
 
 
@@ -32,22 +33,30 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('adminLogout');
 
 
 Route::group(['middleware' => ['adminauth', 'superAdmin']], function () {
+    
+    // Route::withoutMiddleware([SuperAdmin::class])->group(function () {
+    Route::get('products',[ProductController::class, 'index'])->name('products');
+    Route::get('products-data',[ProductController::class, 'data'])->name('productData');
+    Route::get('products-get',[ProductController::class, 'get'])->name('productGet');
+    Route::post('products-sort',[ProductController::class, 'sort'])->name('productsSort');
+    Route::post('product-save',[ProductController::class, 'save'])->name('productSave');
 
-    Route::withoutMiddleware([SuperAdmin::class])->group(function () {
-        Route::get('order-data',[OrderController::class, 'data'])->name('orderData');
-        Route::get('orders',[OrderController::class, 'index'])->name('adminOrder');
-        Route::get('order',[OrderController::class, 'getOrder'])->name('aGetOrder');
-        Route::post('save-review',[OrderController::class, 'saveReview'])->name('adminSaveReview');
-        Route::post('save-notes',[OrderController::class, 'saveNotes'])->name('adminSaveNotes');
-        
-        Route::get('profile',[AdminController::class, 'profile'])->name('adminProfile');
-        Route::post('save-profile',[AuthController::class, 'saveProfile'])->name('adminSaveProfile');
-        Route::post('change-password',[AuthController::class, 'changePassword'])->name('adminChangePassword');
+    Route::get('orders',[OrderController::class, 'index'])->name('adminOrder');
+    Route::get('order-data',[OrderController::class, 'data'])->name('orderData');
+    Route::get('order',[OrderController::class, 'getOrder'])->name('aGetOrder');
+    Route::post('save-review',[OrderController::class, 'saveReview'])->name('adminSaveReview');
+    Route::post('save-notes',[OrderController::class, 'saveNotes'])->name('adminSaveNotes');
+    
+    Route::get('profile',[AdminController::class, 'profile'])->name('adminProfile');
+    Route::post('save-profile',[AuthController::class, 'saveProfile'])->name('adminSaveProfile');
+    Route::post('change-password',[AuthController::class, 'changePassword'])->name('adminChangePassword');
 
-        Route::post('upload-image',[ImageController::class, 'upload'])->name('aUpload');
-        Route::post('gallery-data',[ImageController::class, 'galleryData']);
-        Route::post('remove-image',[ImageController::class, 'remove'])->name('aRemoveImage');
-    });
+    Route::post('upload-image',[ImageController::class, 'upload'])->name('aUpload');
+    Route::post('change-image-color',[ImageController::class, 'changeImageColor'])->name('changeImageColor');
+    Route::post('gallery-data',[ImageController::class, 'galleryData']);
+    Route::post('gallery-sort',[ImageController::class, 'gallerySort']);
+    Route::post('remove-image',[ImageController::class, 'remove'])->name('aRemoveImage');
+    // });
     Route::post('save-order-overview',[OrderController::class, 'saveOverview'])->name('adminSaveOverview');
 
 	// Admin Dashboard

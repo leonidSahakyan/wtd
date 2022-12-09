@@ -32,11 +32,11 @@ class AdminController extends Controller
         }
 
         $users =  DB::table('users')->count();
-        $services =  DB::table('services')->whereNull('deleted_at')->count();
+        // $services =  DB::table('services')->whereNull('deleted_at')->count();
         // $pending =  DB::table('users')->where('verify','pending')->count();
         $orders =  DB::table('orders')->where('status','approved')->count();
 
-        view()->share('services', $services);
+        // view()->share('services', $services);
         // view()->share('pending', $pending);
         view()->share('users', $users);
         view()->share('orders', $orders);

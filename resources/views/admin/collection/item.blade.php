@@ -23,6 +23,9 @@
                             <input type="hidden" name="cover" class="cover" value="@if ($item->image_id) {{ $item->image_id }} @endif" />
                         </div>
                         <div class="image-action @if ($item->image_id) fileExist @else fileNotExist @endif">
+                            <div>
+                                <span >size: (658x795) </span>
+                            </div>
                             <div class="img-not-exist">
                                 <span id="uploadBtn" class="btn btn-success">Select image </span>
                             </div>
@@ -45,14 +48,19 @@
                                 placeholder="title" value="{{ $item->title }}" />
                         </div>
                         <div class="form-group">
+                            <label class="small mb-1" for="title">Title (with &lt;br&gt;)</label>
+                            <input class="form-control" name="title_droped" type="text"
+                                placeholder="title" value="{{ $item->title_droped }}" />
+                        </div>
+                        <div class="form-group">
                             <label class="small mb-1" for="title">Slug</label>
                             <input class="form-control" name="slug" type="text"
                                 placeholder="Slug" value="{{ $item->slug }}" />
                         </div>
                         <div class="my-2"></div>
                         <div class="form-group">
-                            <label class="small mb-1" for="title">Featured</label>:
-                            <input class="admin_checkbox" value="1" type="checkbox" name="featured" {{$item->featured == 1 ? 'checked' : ''}} />
+                            <input class="admin_checkbox" value="1" id="featured" type="checkbox" name="featured" {{$item->featured == 1 ? 'checked' : ''}} />
+                            <label class="small" for="featured">Featured</label>
                         </div>
                         <div class="my-2"></div>
                         <div class="form-group">

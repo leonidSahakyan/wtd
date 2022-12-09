@@ -24,7 +24,7 @@ class Gallery extends Model
 
 		if($gallery){
     		$images = DB::table('images')
-                ->select('id','filename','ext','ordering','params','size')
+                ->select('id','filename','ext','ordering','size','color')
 			    ->where('parent_id', $gallery->id)
                 ->orderBy('ordering', 'asc')
                 ->get();

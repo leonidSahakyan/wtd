@@ -17,7 +17,6 @@
         @stack('css')
     </head>
     <body class="nav-fixed {{ Auth::guard('admin')->user()->role != 'superadmin' ? 'sidenav-toggled' : '' }}">
-        @include('admin.blocks.editor')
         <nav class="topnav navbar navbar-expand shadow justify-content-between justify-content-sm-start navbar-light bg-white" id="sidenavAccordion">
             <!-- Navbar Brand-->
             <!-- * * Tip * * You can use text or an image for your navbar brand.-->
@@ -96,18 +95,18 @@
                                 <div class="nav-link-icon"><i data-feather="dollar-sign"></i></div>
                                 Collections
                             </a>
-                            <a class="nav-link @if(isset($menu) && $menu == 'requests') active @endif" href="{{ route('adminRequests') }}">
+                            <a class="nav-link @if(isset($menu) && $menu == 'products') active @endif" href="{{ route('products') }}">
                                 <div class="nav-link-icon"><i data-feather="dollar-sign"></i></div>
-                                Requests
+                                Prodcuts
                             </a>
-                            <a class="nav-link @if(isset($menu) && $menu == 'users') active @endif" href="{{ route('ausers') }}">
+                            <!-- <a class="nav-link @if(isset($menu) && $menu == 'users') active @endif" href="{{ route('ausers') }}">
                                <div class="nav-link-icon"><i data-feather="users"></i></div>
                                Users
                             </a>
                             <a class="nav-link @if(isset($menu) && $menu == 'masters') active @endif" href="{{ route('adminMasters') }}">
                                <div class="nav-link-icon"><i data-feather="users"></i></div>
                                Masters
-                            </a>
+                            </a> -->
 
                             <?php /*
                             <a class="nav-link @if(isset($menu) && $menu == 'categories') active @endif" href="{{ route('adminCategories') }}">

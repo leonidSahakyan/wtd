@@ -13,10 +13,9 @@ class DataComposer
 
     public function __construct()
     {
-        $settings = Settings::where('key','sait_settings')->first();
+        $settings = Settings::where('key','site_settings')->first();
         $site_settings = json_decode($settings->value);
         $this->site_settings = $site_settings;
-     
     }
 
     /**

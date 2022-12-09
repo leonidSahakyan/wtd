@@ -160,7 +160,7 @@
                         if(result){
                             $.ajax({
                             type: "POST",
-                            url: "{{route('aRemoveCategory')}}",
+                            url: "",
                             dataType: 'JSON',
                             data:{_token: "<?php echo csrf_token(); ?>", ids:rows},
                                 success: function(response){

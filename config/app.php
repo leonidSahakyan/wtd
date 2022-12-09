@@ -175,6 +175,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\ViewServiceProvider::class,
+        Spatie\PaginateRoute\PaginateRouteServiceProvider::class
 
     ],
 
@@ -228,8 +229,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Image' => Intervention\Image\Facades\Image::class,
-        'Stripe' => Cartalyst\Stripe\Laravel\Facades\Stripe::class 
-
+        'Stripe' => Cartalyst\Stripe\Laravel\Facades\Stripe::class,
+        'PaginateRoute' => Spatie\PaginateRoute\PaginateRouteFacade::class
     ],
 
 ];

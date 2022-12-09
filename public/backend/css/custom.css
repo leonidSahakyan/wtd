@@ -72,3 +72,24 @@ table.dataTable .selected{
   width: 20px; 
   height: 20px;
 }
+.custom-select-uploader{
+  display: block;
+  width: 100%;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+}
+.gallery-sortable-placeholder {
+  border: 2px dashed #eee;
+  display: inline-block; }
+
+.grid-sortable-placeholder {
+  border: 2px dashed #eee;
+  display: inline-block;
+  width: 100%; }
+
+.dropzone .dz-image-preview .dz-details{
+	cursor: move !important;
+}
+.dropzone .dz-image-preview .btn-block{
+	cursor: pointer !important;
+}

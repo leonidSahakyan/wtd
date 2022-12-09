@@ -23,7 +23,7 @@ class OrderController extends Controller
 
     public function getHash(){
         $c = uniqid (rand (),true);
-        $md5c = md5($c); 
+        $md5c = md5($c);
         return $md5c;
     }
     public function getSku($prefix){

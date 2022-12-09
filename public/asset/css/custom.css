@@ -1,0 +1,19 @@
+.header-home2 .menu-home2{
+    left: -13px!important;
+}
+
+.shop-page .sidebar-left ul li .link-collection.active{
+    color: #ee9051;
+}
+
+.content_loader{
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    opacity: 0.6;
+    z-index: 20;
+    pointer-events: none;
+}

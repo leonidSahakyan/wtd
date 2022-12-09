@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\ImageDB;
 use App\Models\Admin\Gallery;
 use Validator;
+use DB;
 
 class ImageController extends Controller
 {
@@ -18,12 +19,20 @@ class ImageController extends Controller
         $this->request = $request;
     }
     
+    public function changeImageColor(Request $request){
+        $id = (int)$request['imageId'];
+        $color = $request['color'];
+        $img = ImageDB::find($id);
+        $img->color = $color;
+        $img->save();
+        return json_encode(array('status' => 1)); 
+    }
     public function galleryData(){
         $model = new Gallery();
         
         $gallery_id = (int)$this->request->input('gallery_id');
         if($gallery_id){
-            $gallery = $model->get($gallery_id);
+            $gallery = $model->get($gallery_id,'backendSmall');
             if($gallery){
                 $data = json_encode(array('data' => $gallery, 'status' => 1));   
             }else{
@@ -106,8 +115,19 @@ class ImageController extends Controller
         return true;
     }
 
-    public function sort(){
+    public function gallerySort(){
         $imageIds = $this->request->input('ids');
+        $primaryId = $imageIds[0];
+
+        $query = DB::table('product')->select('product.id','product.image_id');
+        $query->where('status',1)->where('featured',1)->whereNull('product.deleted_at');
+        $query->join('galleries', 'galleries.id', '=', 'product.gallery_id');
+        $query->join('images', 'images.parent_id', '=', 'galleries.id')->where('images.id',$primaryId);
+        $product = $query->first();
+        if($product && $product->image_id != $primaryId){
+            DB::table('product')->where('id', $product->id)->update(['image_id' => $primaryId]);
+        }
+        
         foreach($imageIds as $value => $key)
         {
             $image = ImageDB::find($key);

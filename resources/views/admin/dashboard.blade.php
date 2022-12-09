@@ -197,7 +197,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="mr-3">
                                 <div class="text-white-75 small">Active services</div>
-                                <div class="text-lg font-weight-bold">{{$services}}</div>
+                                <div class="text-lg font-weight-bold"></div>
                             </div>
                             <i class="feather-xl text-white-50" data-feather="dollar-sign"></i>
                         </div>

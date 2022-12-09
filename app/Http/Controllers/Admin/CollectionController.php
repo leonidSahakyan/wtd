@@ -77,6 +77,7 @@ class CollectionController extends Controller
             'id' => 'required|int',
             'status' => 'required|in:0,1',
             'title' => 'required|string|min:2|max:100',
+            'title_droped' => 'required|string|min:2|max:100',
             'slug' => 'required|string|min:2|max:100',
         ]);
 
@@ -103,13 +104,14 @@ class CollectionController extends Controller
         }
 
         $item->temp = null;
-        $item->featured  = $request->featured == "on" ? 1 : 0;
+        $item->featured  = $request->featured;
         $item->status = $request->status;
         $item->title = $request->title;
+        $item->title_droped = $request->title_droped;
         $item->slug = $request->slug;
         $item->save();
 
-        return json_encode(array('status' => 1));
+        return json_encode(array('status' => 1, 'message' => 'Successfully saved!'));
     }
 
     public function removeCollection(Request $request){
