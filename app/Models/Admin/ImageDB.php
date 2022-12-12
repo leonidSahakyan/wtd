@@ -166,7 +166,7 @@ class ImageDB extends Model
                 }else{
                     DB::table('product')->where('id', $product->id)->update(['image_id' => null,'status' => 0]);
                 }
-            }   
+            }
         }
 
         if($image){

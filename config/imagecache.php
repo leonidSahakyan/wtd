@@ -56,6 +56,8 @@ return array(
         'backendSmall' => 'App\Filters\Image\BackendSmall',
         'avatar' => 'App\Filters\Image\Avatar',
         'productList' => 'App\Filters\Image\ProductList',
+        'productItem' => 'App\Filters\Image\ProductItem',
+        'productThumb' => 'App\Filters\Image\ProductThumb',
         'slider' => 'App\Filters\Image\Slider',
         'services' => 'App\Filters\Image\Services',
         'document' => 'App\Filters\Image\Document',

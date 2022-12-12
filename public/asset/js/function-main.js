@@ -282,22 +282,22 @@ $(function(){
   });
     // ---------end------------
     // -------form search------
-    $('#btn-search').on('click',function(){
-    	$('.form-search').css('right','0');
-    });
-    $('#close-search').on('click',function(){
-    	$('.form-search').css('right','-1920px');
-    });
+    // $('#btn-search').on('click',function(){
+    // 	$('.form-search').css('right','0');
+    // });
+    // $('#close-search').on('click',function(){
+    // 	$('.form-search').css('right','-1920px');
+    // });
     // ------------end------------
     // --------form cart----------
-    $('#btn-cart').on('click',function(){
-    	$('.form-cart').css('right','0');
-    	$('.overlay').css('opacity','1').css('visibility','visible');
-    });
-    $('#close-cart').on('click',function(){
-    	$('.form-cart').css('right','-470px');
-    	$('.overlay').css('opacity','0').css('visibility','hidden');
-    });
+    // $('#btn-cart').on('click',function(){
+    // 	$('.form-cart').css('right','0');
+    // 	$('.overlay').css('opacity','1').css('visibility','visible');
+    // });
+    // $('#close-cart').on('click',function(){
+    // 	$('.form-cart').css('right','-470px');
+    // 	$('.overlay').css('opacity','0').css('visibility','hidden');
+    // });
     // -------------end----------
     // ------push menu----------
     $(function(){

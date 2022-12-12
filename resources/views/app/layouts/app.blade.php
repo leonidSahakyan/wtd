@@ -61,7 +61,7 @@
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-7 text-right icon-main">
                     <a href="#" class="link-menu delay03 container_20 relative inline-block text-center" id="btn-cart">
                         <i class="ti-bag"></i>
-                        <figure class="absolute label-cart number-font">0</figure>
+                        <figure class="absolute label-cart number-font">{{$cartCount}}</figure>
                     </a>
                     <a href="#" class="link-menu delay03 inline-block hidden-md hidden-lg space_left_10 btn-push-menu">
                         <svg width="26" height="16" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 66 41" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve">
@@ -127,7 +127,7 @@
                             </form>
                         
 	</div>
-	<div class="form-cart delay03">
+	<!-- <div class="form-cart delay03">
 		<i class="ti-close" id="close-cart"></i>
 		<h3 class="title-font capital">my cart</h3>
 		<div class="empty-cart">
@@ -135,7 +135,7 @@
 			<a href="#" class="capital des-font">start shopping</a>
 		</div>
 		
-	</div>
+	</div> -->
 </body>
 <script src="{{ asset('asset/js/jquery-3.3.1.min.js') }}" defer=""></script>
 <script src="{{ asset('asset/js/bootstrap.min.js') }}" defer=""></script>
@@ -143,6 +143,8 @@
 <script src="{{ asset('asset/js/function-main.js') }}" defer=""></script>
 <script src="{{ asset('asset/js/jquery.fancybox.min.js') }}" defer=""></script>
 <script src="{{ asset('asset/js/function-select-custom.js') }}" defer=""></script>
+<script src="{{ asset('asset/js/function-input-number.js') }}" defer=""></script>
 <script src="{{ asset('asset/js/custom.js') }}" defer=""></script>
+@stack('script')
 </body>
 </html>

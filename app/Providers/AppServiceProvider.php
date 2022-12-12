@@ -57,7 +57,8 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');  
         }
         
-        // $card = \Session::get('card');
-        // view()->share('card', $card);
+
+        
+        // view()->share('cart', $cart);
     }
 }

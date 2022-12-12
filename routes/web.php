@@ -18,7 +18,7 @@ use App\Helpers\Helper;
 |
 */
 Route::get('/', [WelcomeController::class, 'homepage'])->name('homepage');
-// Route::get('/shop', [WelcomeController::class, 'shop'])->name('shop');
+Route::get('/cart', [WelcomeController::class, 'cart'])->name('cart');
 
 Route::paginate('shop',function (){
     $app = app();
@@ -29,12 +29,11 @@ Route::paginate('shop',function (){
 
 Route::paginate('shop/collection/{slug}',function ($slug){
     $id = Helper::checkCollectionSlug($slug);
-        
+    //TODO FIX if slug not exist
     if($id){
         $app = app();
         $controllerPath = 'App\Http\Controllers\WelcomeController';
         $controller = $app->make($controllerPath);
-        
         return $controller->callAction('shop', ['id'=>$id]);
     }else{
         return redirect('/404');
@@ -45,7 +44,24 @@ Route::paginate('shop/collection/{slug}',function ($slug){
     return $controller->callAction('shop',['id'=>$id]);
 })->name('collection');
 
+Route::get('product/{slug}', function ($slug) {
+    $id = Helper::checkProductSlug($slug);
+
+    if(!$id){
+        return redirect('/404');
+    }
+
+    $app = app();
+    $controllerPath = 'App\Http\Controllers\WelcomeController';
+    $controller = $app->make($controllerPath);
+    
+    return $controller->callAction('product', ['id'=>$id]);
+})->name('product');
+
 Route::post('/add-to-cart', [WelcomeController::class, 'addToCart'])->name('add-to-cart');
+Route::post('/update-cart', [WelcomeController::class, 'updateCart'])->name('update-cart');
+Route::post('/remove-cart', [WelcomeController::class, 'removeCart'])->name('remove-cart');
+Route::post('/checkout', [WelcomeController::class, 'checkout'])->name('checkout');
 // Route::get('/auth', [WelcomeController::class, 'auth'])->name('user-auth');
 
 ///owner

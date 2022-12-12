@@ -20,7 +20,7 @@
                 </div>
                 <h1 class="title-font capital title-slider-home2 delay1_5">{!!$collection->title!!}</h1>
             </div>
-            <a href="#"><img src="{{asset('images/slider/'.$collection->file_name.'.'.$collection->ext)}}" class="img-responsive img-slider-main delay1_5" alt=""></a>
+            <a href="{{ route('collection', ['slug'=>$collection->slug])}}"><img src="{{asset('images/slider/'.$collection->file_name.'.'.$collection->ext)}}" class="img-responsive img-slider-main delay1_5" alt=""></a>
         </div>
     </div>
     @endforeach
@@ -46,14 +46,14 @@
                 @foreach($products as $product)
                     <div class="product">
                         <div class="img-product relative">
-                            <a href="#"><img src="{{asset('images/productList/'.$product->file_name.'.'.$product->ext)}}" class="img-responsive" alt="{{$product->title}}"></a>
-                            <div class="product-icon text-center absolute">
+                            <a href="{{route('product',['slug'=>$product->slug])}}"><img src="{{asset('images/productList/'.$product->file_name.'.'.$product->ext)}}" class="img-responsive" alt="{{$product->title}}"></a>
+                            <!-- <div class="product-icon text-center absolute">
                                 <form method="post" action="/cart/add" enctype="multipart/form-data" class="inline-block icon-addcart">
                                     @csrf
 				                    <input type="hidden" name="id" value="{{$product->id}}" />
                                     <button type="submit" name="add" class="enj-add-to-cart-btn btn-default"><i class="ti-bag"></i></button>
                                 </form>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="info-product text-center">
                             <h4 class="des-font capital title-product space_top_20"><a href="#">{{$product->title}}</a></h4>

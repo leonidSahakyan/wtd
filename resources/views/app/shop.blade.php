@@ -25,8 +25,8 @@
 		<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 content-shop">
 			<div class="row btn-function-shop">
 				<div class="col-lg-7 col-md-6 col-sm-6 col-xs-6 margin_bottom_50">
-					<span class="des-font showing hidden-xs">Showing 1–9 of 50 results</span>
-					<button class="active" id="btn-grid"><i class="ti-layout-grid3-alt"></i></button>
+					<!-- <span class="des-font showing hidden-xs">Showing 1–9 of 50 results</span> -->
+					<button class="active" id="btn-grid" style="padding-left:0;"><i class="ti-layout-grid3-alt"></i></button>
 					<button id="btn-list"><i class="ti-list"></i></button>
 				</div>
 				<!-- <div class="col-lg-5 col-md-6 col-sm-6 col-xs-6 margin_bottom_50 text-right select-view">

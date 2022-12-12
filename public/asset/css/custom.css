@@ -17,3 +17,17 @@
     z-index: 20;
     pointer-events: none;
 }
+label.error{
+    display: block;
+}
+
+.custom_self_select{
+    height: 60px;
+    padding-left: 28px;
+    font-size: 18px;
+    border-radius: 0;
+    border: 1px solid #ddd;
+    box-shadow: unset;
+    -webkit-appearance: none;
+    appearance: none;
+ }

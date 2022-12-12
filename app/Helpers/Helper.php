@@ -6,6 +6,7 @@ use App\Models\Admin\Admin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use App\Models\Collection;
+use App\Models\Product;
 
 class Helper
 {
@@ -22,6 +23,12 @@ class Helper
 
     public static function checkCollectionSlug($slug){
 		$exist = Collection::select('id')->whereNull('deleted_at')->where('status', 1)->where('slug',$slug)->first();
+        if($exist)return array('id'=>$exist->id);
+        return false;
+    }
+
+    public static function checkProductSlug($slug){
+		$exist = Product::select('id')->whereNull('deleted_at')->where('status', 1)->where('slug',$slug)->first();
         if($exist)return array('id'=>$exist->id);
         return false;
     }

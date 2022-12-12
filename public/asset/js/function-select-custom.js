@@ -1,6 +1,6 @@
 $(document).ready(function(){
     // --------custom select--------------
-$('select').each(function(){
+$('select.custom_select').each(function(){
     var $this = $(this), numberOfOptions = $(this).children('option').length;
   
     $this.addClass('select-hidden'); 
@@ -8,7 +8,7 @@ $('select').each(function(){
     $this.after('<div class="select-styled"></div>');
 
     var $styledSelect = $this.next('div.select-styled');
-    $styledSelect.text($this.children('option').eq(0).text());
+    $styledSelect.text($this.children('option:selected').eq(0).text());
   
     var $list = $('<ul />', {
         'class': 'select-options'
@@ -30,13 +30,21 @@ $('select').each(function(){
         });
         $(this).toggleClass('active').next('ul.select-options').toggle();
     });
-  
+    
+    var colorAtt = false
+    if($this.attr('color-attr')){
+        colorAtt = true;
+    }
+    var sizeAtt = false
+    if($this.attr('size-attr')){
+        sizeAtt = true;
+    }
     $listItems.click(function(e) {
         e.stopPropagation();
         $styledSelect.text($(this).text()).removeClass('active');
         $this.val($(this).attr('rel'));
         $list.hide();
-        //console.log($this.val());
+        $this.trigger('change');
     });
   
     $(document).click(function() {

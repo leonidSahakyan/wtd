@@ -4,6 +4,7 @@ $(document).ready(function(){
   var $input = $(this).parents('.input-number-group').find('.input-number');
   var val = parseInt($input.val(), 10);
   $input.val(val + 1);
+  $input.trigger('change');
 });
 
 $('.input-number-decrement').on("click",function() {
@@ -13,5 +14,6 @@ $('.input-number-decrement').on("click",function() {
 if( val > min ){
   $input.val(val - 1);
 }
+$input.trigger('change');
 });
 });
