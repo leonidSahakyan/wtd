@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Admin\Order;
 use App\Models\Admin\Logger;
 use App\Models\Product;
-// use App\Models\Admin\Gallery;
+use App\Events\SendNotification;
 use App\Models\Admin\Collection;
 
 class OrderController extends Controller
@@ -103,21 +103,21 @@ class OrderController extends Controller
             $payload = json_encode(array('old_status'=>$order->status,'new_status'=>$status));
             Logger::create(['owner_id' => $order->id,'type' => 'status_changed','data'=>$payload,'created_at' => date("Y-m-d H:i:s"),'owner_type' => 'order']);
 
-            // $data = [
-            //     'sku' => $order->sku,
-            //     'hash' => $order->hash,
-            //     'email' => $order->email,
-            //     'phone' => $order->phone
-            // ];
-            // if($status == 'scheduled'){
-            //     event(new SendNotification('order_scheduled',$data));
-            // }
-            // if($status == 'done'){
-            //     event(new SendNotification('order_done',$data));
-            // }
-            // if($status == 'canceled'){
-            //     event(new SendNotification('order_canceled',$data));      
-            // }
+            $data = [
+                'sku' => $order->sku,
+                'hash' => $order->hash,
+                'email' => $order->email
+            ];
+            
+            if($status == 'shipping'){
+                event(new SendNotification('order_shipping',$data));
+            }
+            if($status == 'done'){
+                event(new SendNotification('order_done',$data));
+            }
+            if($status == 'canceled'){
+                event(new SendNotification('order_canceled',$data));      
+            }
 
             $order->status = $status;
             $message = 'Status changed';   

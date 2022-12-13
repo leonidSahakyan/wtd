@@ -3,7 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Simple Transactional Email</title>
+    <title>{{trans('email.header')}}</title>
     <style>
       /* -------------------------------------
           GLOBAL RESETS
@@ -363,7 +363,7 @@
               <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td class="content-block">
-                    <span class="apple-link">Company Inc, American Solar Care, Address bla bla</span>
+                    <span class="apple-link">{{trans('email.footer')}}</span>
                   </td>
                 </tr>
               </table>

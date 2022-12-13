@@ -197,7 +197,7 @@ class OrderController extends Controller
             
             \Session::forget('cart');
 
-            event(new SendNotification('order_paid',['id'=>$invoice->owner_id]));
+            event(new SendNotification('order_paid',['id'=>$invoice->order_id]));
             return response()->json(['status' => 1, 'redirect_url'=> route('checkout_success',['hash' => $data->hash]) ]);
         }
         return response()->json(['status' => 0, 'message'=> "Something wet wrong, pls try again" ]);
