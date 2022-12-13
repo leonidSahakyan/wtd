@@ -2,10 +2,10 @@
 @section('content')
 <div class="banner margin_bottom_150">
 	<div class="container">
-		<h1 class="title-font title-banner banner-product-detail">Embossed backpack in brown</h1>
+		<h1 class="title-font title-banner banner-product-detail">{{$product->title}}</h1>
 		<ul class="breadcrumb des-font">
-			<li><a href="Home1.html">Home</a></li>
-			<li><a href="#">Shop</a></li>
+			<li><a href="{{route('homepage')}}">Home</a></li>
+			<li><a href="{{route('shop')}}">Shop</a></li>
 			<li class="active">Embossed backpack in brown</li>
 		</ul>
 	</div>

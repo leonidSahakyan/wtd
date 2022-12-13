@@ -56,7 +56,7 @@
                             </div> -->
                         </div>
                         <div class="info-product text-center">
-                            <h4 class="des-font capital title-product space_top_20"><a href="#">{{$product->title}}</a></h4>
+                            <h4 class="des-font capital title-product space_top_20"><a href="{{route('product',['slug'=>$product->slug])}}">{{$product->title}}</a></h4>
                             <p class="number-font price-product"><span class="price">${{$product->price}}.00</span></p>
                         </div>
                     </div>

@@ -26,7 +26,7 @@ class WelcomeController extends Controller
         }
         $query->where('status',1)->where('featured',1)->whereNull('product.deleted_at');
         $query->join('images', 'images.id', '=', 'product.image_id');
-        $feed = $query->orderBy('id', 'DESC')->paginate(1);
+        $feed = $query->orderBy('id', 'DESC')->paginate(9);
 
         view()->share('feed', $feed);
 
