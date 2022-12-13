@@ -155,8 +155,7 @@
                     <div class="tab-pane fade" id="gallery" role="tabpanel"  aria-labelledby="gallery-tab">
                         <div class="container">
                             <div class="card">
-                                <div class="card-header">
-                                </div>
+                                <div class="card-header">Size: (670x820)</div>
                                 <div class="card-body">
                                     <div class="clearfix"></div>
                                     <div id="gallery-container"></div>
