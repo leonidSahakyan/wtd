@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-// use Intervention\Image\Facades\Image;
 use Mail;
 use App\Models\Product;
-// use Session;
 
 class WelcomeController extends Controller
 {
@@ -17,7 +15,6 @@ class WelcomeController extends Controller
 	}
     
     public function shop($id){
-        // Feed Start
 		$query = DB::table('product');
         $query->select('product.id','title','slug','price','description','images.filename as file_name','images.ext as ext');
             
@@ -121,6 +118,7 @@ class WelcomeController extends Controller
             $subTotal += $product->price * $cartItem['qty'];
             $itemsCount += $cartItem['qty'];
         }
+
 
         $countries = DB::table('countries')->select('*')->where('status',1)->orderBy('title','ASC')->get();
         view()->share('itemsCount', $itemsCount);
@@ -282,10 +280,10 @@ class WelcomeController extends Controller
         }
 
         $item = ['id' => $id, 'qty' => $qty];
-        if(count($product->sizes ) > 1){
+        if(count($product->sizes ) > 0){
             $item['size'] = $size;
         }
-        if(count($product->colors ) > 1){
+        if(count($product->colors ) > 0){
             $item['color'] = $color;
         }
 
