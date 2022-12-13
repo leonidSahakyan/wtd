@@ -114,7 +114,7 @@
                                 Categories
                             </a> */ ?>
                             <?php $contectMenuItems = array('services','dictionary','settings','slider','faq','meta');?>
-                            <a class="nav-link @if(isset($menu) && !in_array($menu,$contectMenuItems)) collapsed @endif" href="javascript:void(0);" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="true" aria-controls="collapseUsers">
+                            <!-- <a class="nav-link @if(isset($menu) && !in_array($menu,$contectMenuItems)) collapsed @endif" href="javascript:void(0);" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="true" aria-controls="collapseUsers">
                                 <div class="nav-link-icon"><i data-feather="users"></i></div>
                                 Content
                                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
@@ -146,7 +146,7 @@
                                         F.A.Q.
                                     </a>
                                 </nav>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <!-- Sidenav Footer-->
