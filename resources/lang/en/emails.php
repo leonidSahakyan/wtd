@@ -4,7 +4,7 @@
 	"order_canceled_text" => "Order :sku canceled.",
 	"order_canceled_title" => "Order canceled",
 	"order_done_subject" => "Order :sku done.",
-	"order_done_text" => "Order :sku successfully done. Please leave a review.",
+	"order_done_text" => "Order :sku successfully done.",
 	"order_done_title" => "Order done",
 	"order_paid_subject" => "Order :sku paid.",
 	"order_paid_text" => "Order :sku successfully paid.",
