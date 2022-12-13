@@ -169,8 +169,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <hr>
                                             </div>
+                                            <hr>
                                                 <!-- <h5 class="card-title">Card Image (Left)</h5>
                                                 <p class="card-text">Use the Bootstrap grid with utility classes to create this card variant.</p>
                                                 <div class="checkout_item">{{ $orderItem->title }} (Qty: {{ $orderItem->qty }}) - {{ $orderItem->price }}$ <span style="float:right" class="price_sub">{{ $orderItem->qty * $orderItem->price}} $</span></div> -->
