@@ -3,14 +3,13 @@
 namespace App\Listeners;
 
 use App\Events\SendNotification;
-use App\Mail\OrderPaid;
-use App\Mail\NewOrder;
-use App\Mail\AdminInvitation;
+use App\Mail\DefaultMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use App\Models\Sms;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendNotificationEmail
+class SendNotificationEmail implements ShouldQueue
 {
     /**
      * Handle the event.
@@ -20,29 +19,29 @@ class SendNotificationEmail
      */
     public function handle(SendNotification $event)
     {
-        $notification_type = $event->data['notification_type'];
-        unset($event->data['notification_type']);
+    
+        if(in_array($event->type,['order_paid'])){
+            $id = (int)$event->payload['id'];
 
-        if($notification_type == 'AdminInvitation'){
-            Mail::to($event->data['email'])->send(new AdminInvitation($event->data));
+            $order = DB::table('orders')->select('sku','hash','email')->where('id',$id)->first();
+            $event->payload['sku'] = $order->sku;
+            $event->payload['hash'] = $order->hash;
+            $event->payload['email'] = $order->email;
+            $event->payload['subject_data'] = ['sku' => $order->sku];
+
+            $adminMail = DB::table('admin')->select('email')->first();
+
+            Mail::to($event->payload['email'])->send(new DefaultMail($event));
+            Mail::to($adminMail->email)->send(new DefaultMail($event));
+
+            // if($adminMail->sms_notification){
+            //     $message =  trans('sms.'.$event->type, ['sku' => $event->payload['sku']]);
+            //     Sms::send($adminMail->phone,$message);
+            // }
         }
-
-        if($notification_type == 'OrderPaid'){
-            $orderId = (int)$event->data['order_id'];
-
-            $order = DB::table('orders')->select('sku','hash','email')->where('id',$orderId)->first();
-            $event->data['sku'] = $order->sku;
-            $event->data['hash'] = $order->hash;
-            $event->data['email'] = $order->email;
-
-            Mail::to($event->data['email'])->send(new OrderPaid($event->data));
-
-            $adminMail = DB::table('admin')->select('email','phone')->where('role','superadmin')->first();
-            if($adminMail->email){
-                Mail::to($adminMail->email)->send(new NewOrder($event->data));
-            }
-            $message = "New order!\nOrder ".$order->sku." successfully paid.";
-            Sms::send($adminMail->phone,$message);
+        if(in_array($event->type,['order_shipping','order_done','order_canceled'])){
+            $event->payload['subject_data'] = ['sku' => $event->payload['sku']];
+            Mail::to($event->payload['email'])->send(new DefaultMail($event));    
         }
     }
 }

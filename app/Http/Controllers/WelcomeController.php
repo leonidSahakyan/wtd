@@ -70,9 +70,6 @@ class WelcomeController extends Controller
         return view('app.welcome');
     }
     public function product($id){
-        // $cart = session('cart');
-        // var_dump($cart);
-        // exit();
         $product = DB::table('product')->where('id',$id)->where('status',1)->whereNull('deleted_at')->first();
         $collection = DB::table('collections')->where('id',$product->parent_id)->first();
         $product->sizes = json_decode($product->sizes) ? json_decode($product->sizes) : []; 
@@ -134,51 +131,6 @@ class WelcomeController extends Controller
         return view('app.cart');
     }
 
-    // private function getProdut($cartItem){
-    //     $query = DB::table('product')->select('product.*','images.filename','images.ext','images.color')->where('product.id',$cartItem['id']);
-    //     if(isset($cartItem['color'])){
-    //         $query->where('images.color',$cartItem['color']);
-    //     }
-    //     $query->leftJoin('galleries','galleries.id','=','product.gallery_id');
-    //     $query->leftJoin('images','images.parent_id','=','galleries.id');
-    //     $item = $query->orderBy('images.ordering','asc')->first();
-    //     if(!$item){
-    //         $query = DB::table('product')->select('product.*','images.filename','images.ext','images.color')->where('product.id',$cartItem['id']);
-    //         $query->leftJoin('galleries','galleries.id','=','product.gallery_id');
-    //         $query->leftJoin('images','images.parent_id','=','galleries.id');
-    //         $item = $query->orderBy('images.ordering','asc')->first();    
-    //     }
-    //     return $item;
-    // }
-
-
-    // public function checkout(Request $request){
-    //     $request->validate([
-    //         'first_name'      => 'required|string|max:100',
-    //         'last_name'       => 'required|string|max:100',
-    //         'email'       => 'required|email:rfc',
-    //         'phone'           => 'required|string|max:30',
-    //         'shipping_country'      => 'required|int',
-    //         'city'      => 'required|string',
-    //         'address'       => 'required|string',
-    //         'post_code'       => 'nullable|string',
-    //         'notes'       => 'nullable|string',
-    //     ]);
-
-    //     $order = new Order();
-    //     $order->sku =  uniqid("O-");
-    //     $order->hash =  Str::uuid()->toString();
-    //     $order->first_name = $request->first_name;
-    //     $order->last_name  = $request->last_name;
-    //     $order->email      = $request->email;
-    //     $order->phone      = $request->phone;
-    //     $order->shipping_country = $request->shipping_country;
-    //     $order->city    = $request->city;
-    //     $order->address    = $request->address;
-    //     $order->notes = $request->notes;
-        
-    //     $submittedPrice = $request->total_price;
-    // }
     public function updateCart(Request $request){
         // $validator = Validator::make($request->all(),[
         //     'id' => 'required|int',
@@ -391,50 +343,5 @@ class WelcomeController extends Controller
             $cartCount += $c['qty'];
         }
         return json_encode(array('status' => 1,'cart_count' => $cartCount));
-    }
-    public function contact()
-    {
-        view()->share('menu', 'contact');
-        return view('app.contact');
-    }
-    public function auth()
-    {
-        view()->share('menu', 'signin');
-        return view('app.auth');
-    }
-    public function sign()
-    {
-        view()->share('menu', 'signin');
-        return view('app.sign');
-    }
-    public function send(Request $request)
-    {
-        // dd($request->all());
-
-        $validated = $request->validate([
-            'email' => 'email:rfc', //,dns
-            'name' => 'string',
-            'subject' => 'string',
-            'phone' => 'numeric',
-            'message' => 'required|string'
-        ]);
-
-        $data = DB::table('settings')->whereIn('key', ['contact_email'])->get()->keyBy('key');
-        $contact_email = $data['contact_email']->value;
-        $data = array();
-        $data['email'] = $request['email'];
-        $data['name'] = isset($request['name']) ? $request['name'] : '-----';
-        $data['subject'] = isset($request['subject']) ? $request['subject'] : '-----';
-        $data['msg'] = $request['message'];
-        $data['phone'] = $request['phone'];
-
-        $mail = Mail::send('emails.contact', $data, function ($message) use ($contact_email) {
-            $message->from('no-reply@solar.solar', "Solar");
-            $message->subject("Solar contact");
-            $message->to($contact_email);
-        });
-
-
-        return json_encode(array('status' => 1));
     }
 }

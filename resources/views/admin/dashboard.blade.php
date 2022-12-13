@@ -187,23 +187,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
-            var itemPopup = new Popup;
-            itemPopup.init({
-                size:'modal-xl',
-                identifier:'edit-item',
-                class: 'modal',
-                minHeight: '200',
-            })
-            window.itemPopup = itemPopup;
-            $('#log-timeline').on('click', '.user_edit', function (e) {
-                editId = $(this).attr('edit_item_id');
-                page = $(this).attr('page');
-                itemPopup.setTitle('Edit Users');
-                itemPopup.load("{{route('aGetUser')}}?id="+ editId+"&page="+page, function () {
-                    this.open();
-                });
-            });
-
             var orderPopup = new Popup;
             orderPopup.init({
                 size:'modal-xl',

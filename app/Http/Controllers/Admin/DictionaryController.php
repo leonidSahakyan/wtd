@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Dictionary;
-use App\Models\Admin\Settings;
 use Illuminate\Routing\Redirector;
 use File;
 use ZipArchive;
@@ -25,7 +24,8 @@ class DictionaryController extends Controller
 
     public function index()
     {
-        $synced = Settings::where('key', 'dictionary_sync')->first();
+        $synced =  DB::table('settings')->select('value')->where('key', 'dictionary_sync')->first();
+        // $synced = Settings::where('key', 'dictionary_sync')->first();
         view()->share('synced', $synced->value);
         view()->share('menu', 'dictionary');
         return view('admin.dictionary.index');

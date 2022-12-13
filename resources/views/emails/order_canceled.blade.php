@@ -1,8 +1,7 @@
 @extends('emails.layout')
 @section('content')
-<p><h2>Master invantatoin</h2></p>
-<p>Username: {{ $email }},</p>
-<p>Temporary password: {{ $password }}</p>
+<p><h2>{{trans('emails.order_canceled_title')}}</h2></p>
+<p>{{trans('emails.order_canceled_text', ['sku' => $sku])}}</p>
 <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
     <tbody>
     <tr>
@@ -10,7 +9,7 @@
         <table role="presentation" border="0" cellpadding="0" cellspacing="0">
             <tbody>
             <tr>
-                <td> <a href="{{ url('/admin') }}" target="_blank">Go to admin panel</a> </td>
+                <td> <a href="{{ route('order', ['hash'=>$hash])}}" target="_blank">View order</a> </td>
             </tr>
             </tbody>
         </table>

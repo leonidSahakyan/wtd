@@ -26,13 +26,13 @@
     @endforeach
 </div>
 @endif
-@if(isset($site_settings->facebook) || isset($site_settings->instagram))
+@if(trans('app.facebook_url') || trans('app.instagram_url'))
 <div class="flex fixed right social-fixed delay03">
-    @if(isset($site_settings->facebook))
-        <a href="{{$site_settings->facebook}}" target="_blank" class="delay03"><i class="ti-facebook"></i></a>
+    @if(trans('app.facebook_url'))
+        <a href="{{trans('app.facebook_url')}}" target="_blank" class="delay03"><i class="ti-facebook"></i></a>
     @endif
-    @if(isset($site_settings->instagram))
-        <a href="{{$site_settings->instagram}}" target="_blank" class="delay03"><i class="ti-instagram"></i></a>
+    @if(trans('app.instagram_url'))
+        <a href="{{trans('app.instagram_url')}}" target="_blank" class="delay03"><i class="ti-instagram"></i></a>
     @endif
 </div>
 @endif

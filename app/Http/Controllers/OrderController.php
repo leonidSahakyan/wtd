@@ -3,22 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-// use App\Models\Service;
-// use App\Models\ServiceReplacement;
-// use App\Models\ServiceTypes;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use Illuminate\Support\Str;
 use App\Models\OrderItems;
 use App\Models\Product;
-// use App\Models\Maintenance;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Admin\Logger;
-// use App\Models\Gallery;
-// use App\Events\SendNotification;
-// use Stripe;
+use App\Events\SendNotification;
 
 class OrderController extends Controller
 {
@@ -203,7 +197,7 @@ class OrderController extends Controller
             
             \Session::forget('cart');
 
-            //event(new SendNotification('order_paid',['id'=>$invoice->owner_id]));
+            event(new SendNotification('order_paid',['id'=>$invoice->owner_id]));
             return response()->json(['status' => 1, 'redirect_url'=> route('checkout_success',['hash' => $data->hash]) ]);
         }
         return response()->json(['status' => 0, 'message'=> "Something wet wrong, pls try again" ]);

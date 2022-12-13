@@ -88,9 +88,9 @@
 				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-left logo-footer clear-space-left">
 					<a href="#" class="inline-block"><img src="{{ asset('asset/img/logo.png') }}" class="img-responsive" alt=""></a>
 				</div>
-                @if(isset($site_settings->email))
+                @if(trans('app.contact_email'))
 				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right newsletter clear-space-right">
-					<a href="mailto:{{$site_settings->email}}" class="des-font delay03 inline-block"><span>{{$site_settings->email}}</span> <i class="ti-email delay03"></i></a>
+					<a href="mailto:{{trans('app.contact_email')}}" class="des-font delay03 inline-block"><span>{{trans('app.contact_email')}}</span> <i class="ti-email delay03"></i></a>
 				</div>
 				@endif
 			</div>
@@ -101,11 +101,11 @@
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right social-footer clear-space">
 					<div class="social-home2 space_top_40">
-                        @if(isset($site_settings->facebook))
-                            <a href="{{$site_settings->facebook}}" target="_blank" class="delay03 inline-block space_left_40"><i class="ti-facebook delay03"></i></a>
+                        @if(trans('app.facebook_url'))
+                            <a href="{{trans('app.facebook_url')}}" target="_blank" class="delay03 inline-block space_left_40"><i class="ti-facebook delay03"></i></a>
                         @endif
-                        @if(isset($site_settings->instagram))
-                            <a href="{{$site_settings->instagram}}" target="_blank" class="delay03 inline-block space_left_40"><i class="ti-instagram delay03"></i></a>
+                        @if(trans('app.instagram_url'))
+                            <a href="{{trans('app.instagram_url')}}" target="_blank" class="delay03 inline-block space_left_40"><i class="ti-instagram delay03"></i></a>
                         @endif
 					</div>
 				</div>

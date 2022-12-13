@@ -13,4 +13,7 @@
 	"homepage_products_title" => "Featured product",
 	"homepage_video_title" => "skin tones<br>exclisive collection",
 	"homepage_video_url" => "https://www.youtube.com/watch?v=_sI_Ps7JSEk",
+	"contact_email" => "info@witdthedoc.com",
+	"facebook_url" => "https://facebook.com",
+	"instagram_url" => "https://instagram.com",
 ];

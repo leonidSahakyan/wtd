@@ -42,5 +42,5 @@
 	"password_recovery_subject" => "Password recovery",
 	"password_recovery_text" => "We've received a request to reset your password. If you didn't make the request,<br>
 	just ignore this email. Otherwise, you can reset your password using this link.",
-	"password_recovery_title" => "Password recovery1",
+	"password_recovery_title" => "Password recovery",
 ];

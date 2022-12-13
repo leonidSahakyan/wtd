@@ -10,15 +10,17 @@ class SendNotification
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $data;
+    public $type;
+    public $payload;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($data)
+    public function __construct($type,$payload)
     {
-        $this->data = $data;
+        $this->type = $type;
+        $this->payload = $payload;
     }
 }

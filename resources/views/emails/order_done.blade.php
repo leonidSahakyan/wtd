@@ -1,7 +1,7 @@
 @extends('emails.layout')
 @section('content')
-<p><h2>Payment success</h2></p>
-<p>Your order {{$sku}} successfully paid.</p>
+<p><h2>{{trans('emails.order_done_title')}}</h2></p>
+<p>{{trans('emails.order_done_text', ['sku' => $sku])}}</p>
 <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
     <tbody>
     <tr>

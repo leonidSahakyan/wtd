@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Admin\meta;
+use App\Models\Admin\Meta;
 use App\Http\Controllers\Controller;
 use Validator;
 use Illuminate\Http\Request;
@@ -19,7 +19,7 @@ class MetaController extends Controller
     }
 
     public function metaData(Request $request){
-        $model = new meta();
+        $model = new Meta();
         $filter = false;
 
         $items = $model->getAll(
@@ -37,14 +37,14 @@ class MetaController extends Controller
     public function getMeta(Request $request){
         $id = (int)$request['id'];
         if($id){
-            $item = meta::find($id);
+            $item = Meta::find($id);
             if ($item->image_id) {
                 $imageDb = new ImageDB();
                 $item->image = $imageDb->get($item->image_id);
             }
             $mode = 'edit';
         }else{
-            $item = new meta();
+            $item = new Meta();
             $item->created_at = date("Y-m-d H:i:s");
             $mode= "add";
         }
