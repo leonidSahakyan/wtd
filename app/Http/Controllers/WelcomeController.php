@@ -130,12 +130,12 @@ class WelcomeController extends Controller
     }
 
     public function updateCart(Request $request){
-        // $validator = Validator::make($request->all(),[
-        //     'id' => 'required|int',
-        //     'qty' => 'required|int',
-        //     'color' => 'nullable|string',
-        //     'size' => 'nullable|string'
-        // ]);
+        $validator = Validator::make($request->all(),[
+            'id' => 'required|int',
+            'qty' => 'required|int',
+            'color' => 'nullable|string',
+            'size' => 'nullable|string'
+        ]);
         $newQty = $request->newQty;
         $itemData = json_decode($request->itemData);
         if(!(int)$itemData->id){
@@ -186,12 +186,12 @@ class WelcomeController extends Controller
     }
     
     public function removeCart(Request $request){
-        // $validator = Validator::make($request->all(),[
-        //     'id' => 'required|int',
-        //     'qty' => 'required|int',
-        //     'color' => 'nullable|string',
-        //     'size' => 'nullable|string'
-        // ]);
+        $validator = Validator::make($request->all(),[
+            'id' => 'required|int',
+            'qty' => 'required|int',
+            'color' => 'nullable|string',
+            'size' => 'nullable|string'
+        ]);
         $itemData = json_decode($request->itemData);
         if(!(int)$itemData->id){
             return response()->json(['error' => 'Wrong id'], 422);
