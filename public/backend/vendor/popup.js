@@ -35,7 +35,7 @@ var Popup = function () {
         load: function(url){
           $( "#"+popupOptions.identifier ).remove();
 
-          var $error = 0;
+          var $error = 1;
           $.ajax({
               type: "GET",
               url: url,
@@ -45,19 +45,20 @@ var Popup = function () {
                 if(response.status == 0){
                     if(response.message){
                         toastr['error'](response.message, 'Error');
-                    }else{
-                        toastr['error']("Can\'n load popup" , 'Error');
                     }
-                    $error = 1;
                     return;
-                }
-                if(response.status == 1){
-                  $content = response.data;
-                }
+                  }
+                  if(response.status == 1){
+                    $error = 0;
+                    $content = response.data;
+                  }
               }
           });
-
-          if($error) return false;
+          
+          if($error){
+            toastr['error']("Can\'n load popup" , 'Error');
+            return
+          }
 
           modalHtml = self.createModal($content);
 

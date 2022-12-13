@@ -1,3 +1,13 @@
+@if($mode == 'add')
+    <script type="text/javascript">
+    if(typeof(itemPopup) != "undefined"){
+        $( itemPopup ).one( "loaded", function(e){
+            console.log('asdasd')
+            Loading.remove($('#add_item'));
+        });
+    }
+    </script>
+@endif
 <link href="{!! asset('backend/plugins/dropzone/css/dropzone.css') !!}" media="all" rel="stylesheet" type="text/css" />
 <script src="{!! asset('backend/plugins/dropzone/dropzone.js') !!}" type="text/javascript"></script>
 <script src="{!! asset('backend/js/scripts/gallery.js?8') !!}" type="text/javascript"></script>
@@ -67,12 +77,12 @@
                                             @endif
                                             <div class="small">Price $</div>
                                             <div class="form-group">
-                                                <input class="form-control" id="price" name="price" type="text" value="{{$item->price}}" />
+                                                <input class="form-control" type="number" id="price" name="price" type="text" value="{{$item->price}}" />
                                             </div>
                                             <div class="form-group">
                                                 <?php $checked = $item->featured == '1' ? 'checked' : ''; ?>
-                                                <input class="admin_checkbox" value="1" type="checkbox" name="featured" <?= $checked ?> />
-                                                <span class="small">Featured</span>
+                                                <input class="admin_checkbox" id="featured" value="1" type="checkbox" name="featured" <?= $checked ?> />
+                                                <label for="featured" class="small">Featured</label>
                                             </div>
                                         </div>
                                     </div>
@@ -116,8 +126,8 @@
                                             @foreach(config('constants.attributes.colors') as $color )
                                                 <div class="form-group ">
                                                     <?php $checked = in_array($color,$item->colors) ? 'checked' : ''; ?>
-                                                    <input class="admin_checkbox" value="{{$color}}" type="checkbox" name="colors[]" <?= $checked ?> />
-                                                    <span class="small">{{$color}}</span>
+                                                    <input class="admin_checkbox" id="color_{{$color}}" value="{{$color}}" type="checkbox" name="colors[]" <?= $checked ?> />
+                                                    <label for="color_{{$color}}" class="small">{{$color}}</label>
                                                 </div>
                                             @endforeach
                                         </div>
@@ -132,8 +142,8 @@
                                             @foreach(config('constants.attributes.sizes') as $size )
                                                 <div class="form-group ">
                                                     <?php $checked = in_array($size,$item->sizes) ? 'checked' : ''; ?>
-                                                    <input class="admin_checkbox" value="{{$size}}" type="checkbox" name="sizes[]" <?= $checked ?> />
-                                                    <span class="small">{{$size}}</span>
+                                                    <input class="admin_checkbox" id="size_{{$size}}" value="{{$size}}" type="checkbox" name="sizes[]" <?= $checked ?> />
+                                                    <label for="size_{{$size}}" class="small">{{$size}}</label>
                                                 </div>
                                             @endforeach
                                         </div>
@@ -196,7 +206,11 @@
 		window.editImage = editImage;
 
 		window.gallery = gallery;
-        {{$hasGallery ? "gallery.load()" : "gallery.load('.$item->galler_id.')"}}
+        @if($hasGallery)
+            gallery.load({{$item->gallery_id}})
+        @else
+            gallery.load()
+        @endif
         feather.replace();
     });
     function save() {

@@ -39,6 +39,9 @@ class Product extends Model
 			$query->where('title', 'LIKE', '%'. $filter['search'] .'%')->orWhere('sku', 'LIKE', '%'. $filter['search'] .'%');
 		}
 
+		$query->whereNull('deleted_at');
+		$query->whereNull('temp');
+
 		$query->orderBy($sort_field, $sort_dir);
 		$data = $query->get();
 		$count  = DB::select( DB::raw("SELECT FOUND_ROWS() AS recordsTotal;"))[0];

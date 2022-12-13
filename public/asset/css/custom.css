@@ -41,3 +41,21 @@ label.error{
     display: none;
     padding: 18px 88px !important;
  }
+ /* .shipping-row{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    margin-bottom: 50px;
+ }
+ .shipping-row::after,.shipping-row::before{
+    display: none;
+ }
+
+ .shipping-row .col-sm-6{
+    width: 100%;
+    flex-direction: column;
+    display: flex;
+ }
+ #continueBtn{
+    margin-top: auto;
+ } */

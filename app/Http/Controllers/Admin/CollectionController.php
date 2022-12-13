@@ -108,7 +108,7 @@ class CollectionController extends Controller
         $item->status = $request->status;
         $item->title = $request->title;
         $item->title_droped = $request->title_droped;
-        $item->slug = $request->slug;
+        $item->slug = $slug;
         $item->save();
 
         return json_encode(array('status' => 1, 'message' => 'Successfully saved!'));

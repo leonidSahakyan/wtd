@@ -13,9 +13,9 @@ use App\Models\Product;
 class WelcomeController extends Controller
 {
     public function __construct(Request $request){
-		$this->request = $request;
+        $this->request = $request;
 	}
-
+    
     public function shop($id){
         // Feed Start
 		$query = DB::table('product');
@@ -35,7 +35,7 @@ class WelcomeController extends Controller
 			return view('app.product-list-item-ajax',['type' => $listType]);
 		}
 
-        $collections = DB::table('collections')->select('id','title', 'slug')->whereNull('deleted_at')->orderBy('ordering', 'DESC')->get();
+        $collections = DB::table('collections')->select('id','title', 'slug')->whereNull('deleted_at')->where('status',1)->orderBy('ordering', 'DESC')->get();
         foreach($collections as $col){
             $items_count = DB::table('product')->whereNull('deleted_at')->where('status',1)->where('parent_id',$col->id)->count();
             $col->items_count = $items_count;   
@@ -61,7 +61,7 @@ class WelcomeController extends Controller
 
         $products = DB::table('product')
         ->select('product.id','title','slug','price','images.filename as file_name','images.ext as ext')
-        ->where('status',1)->where('featured',1)
+        ->where('status',1)->where('featured',1)->whereNull('product.temp')
         ->join('images', 'images.id', '=', 'product.image_id')->inRandomOrder()->limit(20)->get();
 
         view()->share('menu', 'home');
@@ -73,7 +73,7 @@ class WelcomeController extends Controller
         // $cart = session('cart');
         // var_dump($cart);
         // exit();
-        $product = DB::table('product')->where('id',$id)->first();
+        $product = DB::table('product')->where('id',$id)->where('status',1)->whereNull('deleted_at')->first();
         $collection = DB::table('collections')->where('id',$product->parent_id)->first();
         $product->sizes = json_decode($product->sizes) ? json_decode($product->sizes) : []; 
         $product->colors = json_decode($product->colors) ? json_decode($product->colors) : [];
@@ -345,6 +345,14 @@ class WelcomeController extends Controller
         }else{
             $exists = -1;
             foreach($cart['items'] as $key => $value){
+                if(count($product->sizes ) && !isset($value['size'])){
+                    unset($cart['items'][$key]);
+                    break;
+                }
+                if(count($product->colors ) && !isset($value['color'])){
+                    unset($cart['items'][$key]);
+                    break;
+                }
                 if(count($product->sizes )&& count($product->colors)){
                     if($value['id'] == $id && $value['size'] == $size && $value['color'] == $color){
                         $exists = $key;

@@ -27,43 +27,50 @@
                         <i class="ml-1" data-feather="chevron-down"></i>
                     </button>
                 </div>
-                <div class="form-group col-md-2 float-right">
+                <div class="form-group col-md-2 float-right  p-0">
                     <div class="small text-muted">Status</div>
                     <select class="form-control" name="filter_status" id="filter_status">
                         <option value=''>-- All--</option>
                         <option value='new'>New</option>
                         <option value='paid'>Paid</option>
-                        <option value='on-going'>On-going</option>
+                        <option value='shipping'>Shipping</option>
                         <option value='done'>Done</option>
                         <option value='canceled'>Canceled</option>
                     </select>
                 </div>
+                <!-- @if($collections)
                 <div class="form-group col-md-2 float-right">
-                    <div class="small text-muted">Type</div>
-                    <select class="form-control" name="filter_type" id="filter_type">
+                    <div class="small text-muted">Collection</div>
+                    <select class="form-control" name="filter_collection" id="filter_collection">
                         <option value=''>-- All--</option>
-                        <option value='business'>Business</option>
-                        <option value='home_owner'>Home owner</option>
+                        @foreach($collections as $collection)
+                            <option value='{{$collection->id}}'>{{$collection->title}}</option>
+                        @endforeach
                     </select>
                 </div>
+                @endif -->
                 <div class="table-responsive">
                         <table class="table table-bordered table-hover " id="dataTable" width="100%" cellspacing="0">
                             <thead>
                             <tr>
-                                <th>SKU</th>
                                 <th>Date</th>
-                                <th>Type</th>
-                                <th>Price</th>
+                                <th>SKU</th>
+                                <th>First name</th>
+                                <th>Last name</th>
+                                <th>Country</th>
+                                <th>Total</th>
                                 <th>Status</th>
                                 <th>Show</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>SKU</th>
                                 <th>Date</th>
-                                <th>Type</th>
-                                <th>Price</th>
+                                <th>SKU</th>
+                                <th>First name</th>
+                                <th>Last name</th>
+                                <th>Country</th>
+                                <th>Total</th>
                                 <th>Status</th>
                                 <th>Show</th>
                             </tr>
@@ -98,7 +105,6 @@
                 var picker =  $("#reportrange").daterangepicker(
                     {
                         onSelect: function() {
-                            console.log('asdasdasd');
                             // start = this.startDate
                             // end = this.endDate
                             // $(this).change();
@@ -143,16 +149,16 @@
                     "data": function(data){
                         data['sort_field'] = data.columns[data.order[0].column].name;
                         data['sort_dir'] =  data.order[0].dir;
+                        data['search'] = data.search.value;
 
                         delete data.columns;
                         delete data.order;
-                        delete data.search;
 
                         var filter_status = $('#filter_status').val();
                         data.filter_status = filter_status;
                         
-                        var filter_type = $('#filter_type').val();
-                        data.filter_type = filter_type;
+                        var filter_collection = $('#filter_collection').val();
+                        data.filter_collection = filter_collection;
                         
                         data.start_date = picker.data('daterangepicker').startDate.format("YYYY-MM-DD");
                         data.end_date = picker.data('daterangepicker').endDate.format("YYYY-MM-DD");
@@ -163,25 +169,12 @@
                     $('[data-toggle="popover"]').popover();
                 },
                 "columns": [
-                    { "data": 'sku', 'name': 'orders.sku',"orderable": true},
                     { "data": 'created_at', 'name': 'orders.created_at',"orderable": true},
-                    { "data": "type", "name":'type', "orderable": true , "sClass": "content-middel",
-                    render: function ( data, type, row, meta) {
-                        switch(row.type){
-                            case 'business':
-                                colorClass = 'badge-success';
-                                break;
-                            case 'home_owner':
-                                colorClass = 'badge-secondary';
-                                break;
-                            default:
-                                colorClass = 'badge-danger';
-                        }
-                        str = capitalize(row.type.replace("_", " "));
-	            	    // return capitalize(str)
-                        return '<div style="font-size:12px;" class="badge '+colorClass+' badge-pill">'+str+'</div>';
-	                }},
-                    { "data": "total", "name":'total', "orderable": true },
+                    { "data": 'sku', 'name': 'orders.sku',"orderable": true},
+                    { "data": "first_name", "name":'first_name', "orderable": true },
+                    { "data": "last_name", "name":'last_name', "orderable": true },
+                    { "data": "country", "name":'countries.id', "orderable": true },
+                    { "data": "total", "name":'total', "orderable": true, render : function ( data, type, row, meta) {return "$"+row.total}},
                     { "data": "status", "name":'status', "orderable": true , "sClass": "content-middel",
                     render: function ( data, type, row, meta) {
                         switch(row.status){
@@ -191,7 +184,7 @@
                             case 'paid':
                                 colorClass = 'badge-secondary';
                                 break;
-                            case 'on-going':
+                            case 'shipping':
                                 colorClass = 'badge-info';
                             break;
                             case 'done':
@@ -213,12 +206,14 @@
 	                }},
                 ],
                 "columnDefs": [
-                    {"width": "15%", "targets": 0},
+                    {"width": "10%", "targets": 0},
                     {"width": "15%", "targets": 1},
                     {"width": "15%", "targets": 2},
-                    {"width": "10%", "targets": 3},
-                    {"width": "10%", "targets": 4},
+                    {"width": "15%", "targets": 3},
+                    {"width": "15%", "targets": 4},
                     {"width": "10%", "targets": 5},
+                    {"width": "10%", "targets": 6},
+                    {"width": "10%", "targets": 7},
                 ],
                 "order": [
                     ['1', "desc"]
@@ -227,7 +222,7 @@
 
             window.datatable = dataTable;  
             
-            $('#filter_status, #filter_type').change(function(){
+            $('#filter_status, #filter_collection').change(function(){
                 dataTable.draw();
             });
 

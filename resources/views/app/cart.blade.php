@@ -85,7 +85,7 @@
         <div class="col-md-7 col-sm-6 col-xs-12">
             <div class="form-note login_page">
                 <h3 class="title-font margin_bottom_20" style="margin-top: 0;">Shipping Information</h3>
-                <div class="row">
+                <div class="row shipping-row" >
                       <div class="col-sm-6">
 					  	  <input type="text" class="form-control form-account margin_bottom_10" id="first_name" name="first_name" placeholder="First name*">
 					  	  <input type="email" class="form-control form-account margin_bottom_10" id="email" name="email" placeholder="Email*">

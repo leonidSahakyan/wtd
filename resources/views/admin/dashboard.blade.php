@@ -71,150 +71,59 @@
                     </div>
                     <div class="card-body">
                         <div class="timeline timeline-xs" id="log-timeline">
-                            @foreach ($logs as $log)
+                        @foreach ($logs as $log)
                                 <div class="timeline-item">
                                     @switch($log->type)
-                                        @case('registration')
+                                        @case('order_created')
+                                            <div class="timeline-item-marker">
+                                                <div class="timeline-item-marker-text">{{$log->humanTime}}</div>
+                                                <div class="timeline-item-marker-indicator bg-yellow"></div>
+                                            </div>
+                                            <div class="timeline-item-content">
+                                                New order created !
+                                                <a class="font-weight-bold text-dark order_edit" page="overview" edit_item_id="{{$log->owner_id}}" href="#!"><br>Order #{{$log->sku}}</a>
+                                            </div>
+                                        @break
+                                        @case('order_paid')
                                             <div class="timeline-item-marker">
                                                 <div class="timeline-item-marker-text">{{$log->humanTime}}</div>
                                                 <div class="timeline-item-marker-indicator bg-purple"></div>
                                             </div>
                                             <div class="timeline-item-content">
-                                                New user
-                                                <a class="font-weight-bold text-dark user_edit" page="registration" edit_item_id="{{$log->owner_id}}" href="#!"> Id #{{$log->owner_id}}</a>
-                                                has registered
+                                                Order paid !
+                                                <a class="font-weight-bold text-dark order_edit" page="billing" edit_item_id="{{$log->owner_id}}" href="#!"><br>Order #{{$log->sku}}</a>
                                             </div>
-                                            @break
-                                        @case('verification')
-                                            <div class="timeline-item-marker">
-                                                <div class="timeline-item-marker-text">{{$log->humanTime}}</div>
-                                                <div class="timeline-item-marker-indicator bg-blue"></div>
-                                            </div>
-                                            <div class="timeline-item-content">
-                                                User
-                                                <a class="font-weight-bold text-dark user_edit" page="verification" edit_item_id="{{$log->owner_id}}" href="#!"> Id #{{$log->owner_id}}</a>
-                                                pending verification
-                                            </div>
-                                            @break
-                                        @case('order_request')
-                                            <div class="timeline-item-marker">
-                                                <div class="timeline-item-marker-text">{{$log->humanTime}}</div>
-                                                <div class="timeline-item-marker-indicator bg-green"></div>
-                                            </div>
-                                            <div class="timeline-item-content">
-                                                New order placed!
-                                                <a class="font-weight-bold text-dark order_edit" edit_item_id="{{$log->owner_id}}" href="#!">Order #{{$log->owner_id}}</a>
-                                            </div>
-                                            @break
+                                        @break
                                     @endswitch
-
                                 </div>
                             @endforeach
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- <div class="col-xxl-4 col-xl-6 mb-4">
+            <div class="col-xxl-4 col-xl-6 mb-4">
                 <div class="card card-header-actions h-100">
                     <div class="card-header">
                         Progress Tracker
-                        <div class="dropdown no-caret">
-                            <button class="btn btn-transparent-dark btn-icon dropdown-toggle" id="dropdownMenuButton" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="text-gray-500" data-feather="more-vertical"></i></button>
-                            <div class="dropdown-menu dropdown-menu-right animated--fade-in-up" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#!">
-                                    <div class="dropdown-item-icon"><i class="text-gray-500" data-feather="list"></i></div>
-                                    Manage Tasks
-                                </a>
-                                <a class="dropdown-item" href="#!">
-                                    <div class="dropdown-item-icon"><i class="text-gray-500" data-feather="plus-circle"></i></div>
-                                    Add New Task
-                                </a>
-                                <a class="dropdown-item" href="#!">
-                                    <div class="dropdown-item-icon"><i class="text-gray-500" data-feather="minus-circle"></i></div>
-                                    Delete Tasks
-                                </a>
-                            </div>
-                        </div>
                     </div>
                     <div class="card-body">
                         <h4 class="small">
-                            Server Migration
-                            <span class="float-right font-weight-bold">20%</span>
+                            Orders complete {{$ordersDone}} / {{$ordersTotal}}
+                            <span class="float-right font-weight-bold">{{$ordersPercent == '100' ? 'Complete!' : $ordersPercent.'%'}}</span>
                         </h4>
-                        <div class="progress mb-4"><div class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div></div>
-                        <h4 class="small">
-                            Sales Tracking
-                            <span class="float-right font-weight-bold">40%</span>
-                        </h4>
-                        <div class="progress mb-4"><div class="progress-bar bg-warning" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div></div>
-                        <h4 class="small">
-                            Customer Database
-                            <span class="float-right font-weight-bold">60%</span>
-                        </h4>
-                        <div class="progress mb-4"><div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div></div>
-                        <h4 class="small">
-                            Payout Details
-                            <span class="float-right font-weight-bold">80%</span>
-                        </h4>
-                        <div class="progress mb-4"><div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div></div>
-                        <h4 class="small">
-                            Account Setup
-                            <span class="float-right font-weight-bold">Complete!</span>
-                        </h4>
-                        <div class="progress"><div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div></div>
+                        <div class="progress mb-4"><div class="progress-bar bg-success" role="progressbar" style="width: {{$ordersPercent}}%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div></div>
                     </div>
-                    <a class="card-footer" href="#!">
-                        <div class="d-flex align-items-center justify-content-between small text-body">
-                            Visit Task Center
-                            <i data-feather="arrow-right"></i>
-                        </div>
-                    </a>
                 </div>
-            </div> -->
+            </div>
         </div>
-        <!-- Example Colored Cards for Dashboard Demo-->
-         <div class="row">
-            <div class="col-xxl-3 col-lg-6">
-                <div class="card bg-primary text-white mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="mr-3">
-                                <div class="text-white-75 small">Users registred</div>
-                                <div class="text-lg font-weight-bold">{{$users}}</div>
-                            </div>
-                            <i class="feather-xl text-white-50" data-feather="users"></i>
-                        </div>
-                    </div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="{{ route('ausers') }}">View Users</a>
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xxl-3 col-lg-6">
-                <div class="card bg-warning text-white mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="mr-3">
-                                <div class="text-white-75 small">Active services</div>
-                                <div class="text-lg font-weight-bold"></div>
-                            </div>
-                            <i class="feather-xl text-white-50" data-feather="dollar-sign"></i>
-                        </div>
-                    </div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="{{ route('ausers') }}?page=employees">View Employees</a>
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                    </div>
-                </div>
-            </div>
+        <div class="row">
             <div class="col-xxl-3 col-lg-6">
                 <div class="card bg-success text-white mb-4">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="mr-3">
-                                <div class="text-white-75 small">Order placed</div>
-                                <div class="text-lg font-weight-bold">{{$orders}}</div>
+                                <div class="text-white-75 small">Orders</div>
+                                <div class="text-lg font-weight-bold">{{$ordersTotal}}</div>
                             </div>
                             <i class="feather-xl text-white-50" data-feather="check-square"></i>
                         </div>
@@ -226,19 +135,41 @@
                 </div>
             </div>
             <div class="col-xxl-3 col-lg-6">
-                <div class="card bg-danger text-white mb-4">
+                <div class="card bg-primary text-white mb-4">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="mr-3">
-                                <div class="text-white-75 small">Pending Requests</div>
-                                {{-- <div class="text-lg font-weight-bold">{{$pending}}</div> --}}
+                                <div class="text-white-75 small">Total paid</div>
+                                <div class="text-lg font-weight-bold">{{$total}}</div>
                             </div>
-                            <i class="feather-xl text-white-50" data-feather="message-circle"></i>
+                            <i class="feather-xl text-white-50" data-feather="users"></i>
                         </div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="{{ route('ausers') }}?page=pending">View Requests</a>
+                        <a class="small text-white stretched-link" href="{{ route('adminOrder') }}">View billings</a>
                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-6 mb-4">
+                <div class="card card-header-actions h-100">
+                    <div class="card-header">
+                        Activity data
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-area"><canvas id="myAreaChart" width="100%" height="30"></canvas></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 mb-4">
+                <div class="card card-header-actions h-100">
+                    <div class="card-header">
+                        Monthly Revenue
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-bar"><canvas id="myBarChart" width="100%" height="30"></canvas></div>
                     </div>
                 </div>
             </div>
@@ -252,6 +183,8 @@
 @push('script')
     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
             var itemPopup = new Popup;
@@ -288,13 +221,183 @@
                 });
             });
 
-            // $('#add_item').on('click', function (e) {
-            //     Loading.add($('#add_item'));
-            //     itemPopup.setTitle('Add Users');
-            //     itemPopup.load("{{route('aGetUser')}}", function () {
-            //         this.open();
-            //     });
-            // });
+            let months = <?php echo json_encode($chartData['month_title']);?>;
+            let ordersCount = <?php echo json_encode($chartData['orders_count']);?>;
+            console.log(months);
+            var ctx = document.getElementById("myAreaChart");
+            var myLineChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: months,
+                    datasets: [
+                    {
+                        label: "Orders",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(0, 172, 105, 0.05)",
+                        borderColor: "rgba(0, 172, 105, 1)",
+                        pointRadius: 3,
+                        pointBackgroundColor: "rgba(0, 172, 105, 1)",
+                        pointBorderColor: "rgba(0, 172, 105, 1)",
+                        pointHoverRadius: 3,
+                        pointHoverBackgroundColor: "rgba(0, 172, 105, 1)",
+                        pointHoverBorderColor: "rgba(0, 172, 105, 1)",
+                        pointHitRadius: 10,
+                        pointBorderWidth: 2,
+                        data: ordersCount
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 25,
+                            top: 25,
+                            bottom: 0
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            time: {
+                                unit: "date"
+                            },
+                            gridLines: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                maxTicksLimit: 7
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                maxTicksLimit: 5,
+                                padding: 10,
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, values) {
+                                    return number_format(value);
+                                }
+                            },
+                            gridLines: {
+                                color: "rgb(234, 236, 244)",
+                                zeroLineColor: "rgb(234, 236, 244)",
+                                drawBorder: false,
+                                borderDash: [2],
+                                zeroLineBorderDash: [2]
+                            }
+                        }]
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyFontColor: "#858796",
+                        titleMarginBottom: 10,
+                        titleFontColor: "#6e707e",
+                        titleFontSize: 14,
+                        borderColor: "#dddfeb",
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        intersect: false,
+                        mode: "index",
+                        caretPadding: 10,
+                        callbacks: {
+                            label: function(tooltipItem, chart) {
+                                var datasetLabel =
+                                    chart.datasets[tooltipItem.datasetIndex].label || "";
+                                return datasetLabel + ": " + number_format(tooltipItem.yLabel);
+                            }
+                        }
+                    }
+                }
+            });
+            ////
+            let revenues = <?php echo json_encode($chartData['revenues']);?>;
+            var ctx = document.getElementById("myBarChart");
+            var myBarChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: "Revenue",
+                        backgroundColor: "rgba(0, 97, 242, 1)",
+                        hoverBackgroundColor: "rgba(0, 97, 242, 0.9)",
+                        borderColor: "#4e73df",
+                        data: revenues,
+                        maxBarThickness: 25
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 25,
+                            top: 25,
+                            bottom: 0
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            time: {
+                                unit: "month"
+                            },
+                            gridLines: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                maxTicksLimit: 6
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: 15000,
+                                maxTicksLimit: 5,
+                                padding: 10,
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, values) {
+                                    return "$" + number_format(value);
+                                }
+                            },
+                            gridLines: {
+                                color: "rgb(234, 236, 244)",
+                                zeroLineColor: "rgb(234, 236, 244)",
+                                drawBorder: false,
+                                borderDash: [2],
+                                zeroLineBorderDash: [2]
+                            }
+                        }]
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        titleMarginBottom: 10,
+                        titleFontColor: "#6e707e",
+                        titleFontSize: 14,
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyFontColor: "#858796",
+                        borderColor: "#dddfeb",
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        caretPadding: 10,
+                        callbacks: {
+                            label: function(tooltipItem, chart) {
+                                var datasetLabel =
+                                    chart.datasets[tooltipItem.datasetIndex].label || "";
+                                return datasetLabel + ": $" + number_format(tooltipItem.yLabel);
+                            }
+                        }
+                    }
+                }
+            });
         });
     </script>
 @endpush

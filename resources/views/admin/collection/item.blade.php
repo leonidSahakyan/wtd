@@ -1,12 +1,12 @@
-<script type="text/javascript">
-	if(typeof(itemPopup) != "undefined"){
-		$( itemPopup ).one( "loaded", function(e){
-			@if($mode == 'add')
-			Loading.remove($('#add_item'));
-			@endif
-		});
-	}
-</script>
+@if($mode == 'add')
+    <script type="text/javascript">
+    if(typeof(itemPopup) != "undefined"){
+        $( itemPopup ).one( "loaded", function(e){
+            Loading.remove($('#add_item'));
+        });
+    }
+    </script>
+@endif
 @include('admin.blocks.uploader')
 <form id="save-item-form" method="post">
     <input type="hidden" class="hidden_id" name="id" value="{{ $item->id }}" />

@@ -23,24 +23,74 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function cal_percentage($num_amount, $num_total) {
+        $count1 = $num_amount / $num_total;
+        $count2 = $count1 * 100;
+        $count = number_format($count2, 0);
+        return $count;
+    }
+
     public function dashboard()
     {
-        $logs = Logger::orderByDesc('id')->limit(7)->get();
+        $logs = Logger::whereIn('type',['order_created','order_paid'])->orderByDesc('id')->limit(7)->get();
 
-        foreach($logs as $k => $l){
-            $l->humanTime = 'asdasd';//Carbon::createFromFormat('Y-m-d H:i:s', $l->created_at)->diffForHumans(null, true);
+        if($logs){
+            foreach($logs as $k => $l){
+                if($l->owner_type == 'order'){
+                    $l->sku =  DB::table('orders')->select('sku')->where('id',$l->owner_id)->first()->sku;   
+                }
+                $l->humanTime = Carbon::createFromFormat('Y-m-d H:i:s', $l->created_at)->diffForHumans(null, true);
+            }
         }
 
-        $users =  DB::table('users')->count();
-        // $services =  DB::table('services')->whereNull('deleted_at')->count();
-        // $pending =  DB::table('users')->where('verify','pending')->count();
-        $orders =  DB::table('orders')->where('status','approved')->count();
+        $ordersDone =  DB::table('orders')->where('status','done')->where('is_paid',1)->count();
+        $ordersTotal =  DB::table('orders')->whereNotIn('status',['new','canceled'])->where('is_paid',1)->count();
+        $ordersPercent = $this->cal_percentage($ordersDone,$ordersTotal);
 
-        // view()->share('services', $services);
-        // view()->share('pending', $pending);
-        view()->share('users', $users);
+        $orders =  DB::table('orders')->where('is_paid',1)->count();
+        $total =   DB::table('orders')->where('is_paid',1)->sum('total');
+
+        $date = new \DateTime;
+        $date->modify('-6 month');
+        $previousYear = $date->format('Y-m-d H:i:s');
+        $billingsData = DB::table('billings')->where('created_at','>', $previousYear)->get();
+        $orderData = DB::table('orders')->whereNotIn('status',['new','canceled'])->where('is_paid',1)->where('created_at','>', $previousYear)->get();
+        
+        for ($i = 5; $i >= 0 ; $i--) {
+            $date = new \DateTime;
+            if($i > 0){
+                $date->modify('-'.$i.' month');
+            }
+            $chartData['month_title'][] = $date->format('M');
+            $period = $date->format('Y-m');
+
+            $orderCount = 0;
+            foreach($orderData as $ordeData){
+                $orderCreated = substr($ordeData->created_at,0,7); 
+                if($period == $orderCreated){
+                    $orderCount++;
+                }
+            }
+            $chartData['orders_count'][] = $orderCount;
+
+            $revenueSum = 0;
+            foreach($billingsData as $bl){
+                $billingCreated = substr($bl->created_at,0,7); 
+                if($period == $billingCreated){
+                    $revenueSum = $revenueSum+$bl->amount_total; 
+                }
+            }
+            $chartData['revenues'][] = $revenueSum;
+        }
+
+
+        view()->share('chartData', $chartData);
+        view()->share('ordersDone', $ordersDone);
+        view()->share('ordersTotal', $ordersTotal);
+        view()->share('total', $total);
         view()->share('orders', $orders);
-
+        view()->share('ordersPercent', $ordersPercent);
         view()->share('logs', $logs);
         view()->share('menu', 'dashboard');
         return view('admin.dashboard');

@@ -7,14 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\Dictionary;
 use App\Models\Admin\Settings;
 use Illuminate\Routing\Redirector;
-use Response;
-use View;
 use File;
 use ZipArchive;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use DB;
-use Log;
 
 class DictionaryController extends Controller
 {
@@ -28,20 +25,14 @@ class DictionaryController extends Controller
 
     public function index()
     {
-        $page = (isset($_GET['page'])) ? $_GET['page'] : false;
-        view()->share('page', $page);
+        $synced = Settings::where('key', 'dictionary_sync')->first();
+        view()->share('synced', $synced->value);
         view()->share('menu', 'dictionary');
-
-
-
-
         return view('admin.dictionary.index');
     }
 
     public function data(Request $request)
-
     {
-
         $model = new Dictionary();
 
         $filter = array('search' => $request->input('search'),
@@ -60,7 +51,6 @@ class DictionaryController extends Controller
             'recordsTotal'=> $inNews['count']));
         return $data;
         //return $request;
-
     }
 
     public function get()
@@ -101,9 +91,7 @@ class DictionaryController extends Controller
         }
 
         $validator = \Validator::make($request->all(), [
-            'en' => 'required|string|min:2|max:100',
-            // 'am' => 'required|string|min:2|max:100',
-            // 'ru' => 'required|string|min:2|max:100'
+            'title' => 'required|string|min:2|max:255',
         ]);
 
         if ($validator->fails())
@@ -111,49 +99,66 @@ class DictionaryController extends Controller
             return response()->json(['status'=>0,'errors'=>$validator->errors()->all()]);
         }
 
-        // $data = $this->request->all();
-
+        if (str_contains($word->en, ':sku') && !str_contains($request['title'], ':sku')) { 
+            return json_encode(array('status' => 0, 'errors' => "Text should have :sku tag"));
+        }
         $saveData = array();
-        $saveData['en'] = $request['en'];
-        // $saveData['ru'] = $request['ru'];
-        // $saveData['am'] = $request['am'];
+        $saveData['en'] = $request['title'];
 
         DB::table('dictionary')->where('key', $key)->update($saveData);
-        // DB::table('settings')->where('key', 'dictionary_sync')->update(['value' => 0]);
-        DB::table('settings')->where('key', 'sync_time')->update(['value' => date("Y-m-d H:i:s")]);
+        DB::table('settings')->where('key', 'dictionary_sync')->update(['value' => 0]);
 
-        $data = json_encode(array('status' => 1));
-        return $data;
+        return json_encode(array('status' => 1));
     }
 
     public function loadDataFromSource()
     {
         $this->initPaths();
-        $en = File::getRequire(base_path() . '/resources/lang/en/app.php');
-        // $ru = File::getRequire(base_path() . '/resources/lang/ru/app.php');
-        // $am = File::getRequire(base_path() . '/resources/lang/am/app.php');
+        $dictionary = File::getRequire(base_path() . '/resources/lang/en/app.php');
+        $emails = File::getRequire(base_path() . '/resources/lang/en/emails.php');
+        // $sms = File::getRequire(base_path() . '/resources/lang/en/sms.php');
 
-        if (is_array($en)) {
-            foreach ($en as $key => $value) {
+        if (is_array($dictionary)) {
+            foreach ($dictionary as $key => $value) {
                 $word = Dictionary::where('key', $key)->first();
                 if (!$word) {
                     $data['key'] = $key;
                     $data['type'] = 'dictionary';
-                    if (isset($en[$key])) {
-                        $data['en'] = $en[$key];
+                    if (isset($dictionary[$key])) {
+                        $data['en'] = $dictionary[$key];
                     }
-                    // if (isset($ru[$key])) {
-                    //     $data['ru'] = $ru[$key];
-                    // }
-                    // if (isset($am[$key])) {
-                    //     $data['am'] = $am[$key];
-                    // }
-
                     DB::table('dictionary')->insert($data);
                 }
             }
         }
 
+        if (is_array($emails)) {
+            foreach ($emails as $key => $value) {
+                $word = Dictionary::where('key', $key)->first();
+                if (!$word) {
+                    $data['key'] = $key;
+                    $data['type'] = 'email';
+                    if (isset($emails[$key])) {
+                        $data['en'] = $emails[$key];
+                    }
+                    DB::table('dictionary')->insert($data);
+                }
+            }
+        }
+
+        // if (is_array($sms)) {
+        //     foreach ($sms as $key => $value) {
+        //         $word = Dictionary::where('key', $key)->first();
+        //         if (!$word) {
+        //             $data['key'] = $key;
+        //             $data['type'] = 'notification';
+        //             if (isset($sms[$key])) {
+        //                 $data['en'] = $sms[$key];
+        //             }
+        //             DB::table('dictionary')->insert($data);
+        //         }
+        //     }
+        // }
         return true;
     }
 
@@ -197,24 +202,46 @@ class DictionaryController extends Controller
         }
 
         $query = DB::table('dictionary');
-        $query->select('*');
-        $data = $query->get();
+        $query->select('*')->where('type','dictionary');
+        $dictionary = $query->get();
 
-        $enString = '';
-        // $ruString = '';
-        $amString = '';
-        foreach ($data as $key => $value) {
-            $enString .= "\t\"" . $value->key . '" => "' . str_replace('"', '\"', $value->en) . "\",\r\n";
-            // $ruString .= "\t\"" . $value->key . '" => "' . str_replace('"', '\"', $value->ru) . "\",\r\n";
-            // $amString .= "\t\"" . $value->key . '" => "' . str_replace('"', '\"', $value->am) . "\",\r\n";
-        }
+        $query = DB::table('dictionary');
+        $query->select('*')->where('type','email');
+        $emails = $query->get();
+        
+        // $query = DB::table('dictionary');
+        // $query->select('*')->where('type','notification');
+        // $sms = $query->get();
 
         $startString = "<?php\r\n return[\r\n";
         $endString = "];";
 
-        $write = $startString . $enString . $endString;
+        //Dictionary
+        $dictionaryString = '';
+        foreach ($dictionary as $key => $value) {
+            $dictionaryString .= "\t\"" . $value->key . '" => "' . str_replace('"', '\"', $value->en) . "\",\r\n";
+        }
+        $write = $startString . $dictionaryString . $endString;
         $outputEn = fopen(base_path() . '/resources/lang/en/app.php', 'w');
         fputs($outputEn, $write);
+
+        //emails
+        $emailString = '';
+        foreach ($emails as $key => $value) {
+            $emailString .= "\t\"" . $value->key . '" => "' . str_replace('"', '\"', $value->en) . "\",\r\n";
+        }
+        $write = $startString . $emailString . $endString;
+        $outputEn = fopen(base_path() . '/resources/lang/en/emails.php', 'w');
+        fputs($outputEn, $write);
+
+        //emails
+        // $smsString = '';
+        // foreach ($sms as $key => $value) {
+        //     $smsString .= "\t\"" . $value->key . '" => "' . str_replace('"', '\"', $value->en) . "\",\r\n";
+        // }
+        // $write = $startString . $smsString . $endString;
+        // $outputEn = fopen(base_path() . '/resources/lang/en/sms.php', 'w');
+        // fputs($outputEn, $write);
 
         // $write = $startString . $ruString . $endString;
         // $outputRu = fopen(base_path() . '/resources/lang/ru/app.php', 'w');
@@ -227,8 +254,6 @@ class DictionaryController extends Controller
 
         DB::table('settings')->where('key', 'dictionary_sync')->update(['value' => 1]);
 
-        Log::info('Sync dictionary - ' . date("d-m-Y h:m:s"));
-
         if (!$this->backup("2")) {
             return json_encode(array('status' => 0, 'message' => "Can't create backup"));
         }
@@ -240,11 +265,11 @@ class DictionaryController extends Controller
 
     private function initPaths()
     {
-        $path = base_path() . '/resources/lang/en/app.php';
-        if (!file_exists($path)) {
-            mkdir(dirname($path), 0755, true);
-            fopen($path, 'w');
-        }
+        // $path = base_path() . '/resources/lang/en/app.php';
+        // if (!file_exists($path)) {
+        //     mkdir(dirname($path), 0755, true);
+        //     fopen($path, 'w');
+        // }
 
         $backupPath = base_path() . '/resources/langBackup';
         if (!file_exists($backupPath)) {

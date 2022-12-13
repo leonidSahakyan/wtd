@@ -22,17 +22,18 @@ class Dictionary extends Model
 
 		$query->select(array(DB::raw('SQL_CALC_FOUND_ROWS dictionary.key'),
 		                             'dictionary.key as DT_RowId',
-									 'dictionary.en as title'));
+									 'dictionary.en as title','type'));
 		if($length != '-1'){
 			$query->skip($start)->take($length);
 		}
 
 		if ($filter){
 			if ( strlen($filter['search']) ) {
-    			$query->where('key', 'LIKE', '%'. $filter['search'] .'%')
-    			->orWhere('en', 'LIKE', '%'. $filter['search'] .'%');
-    			// ->orWhere('ru', 'LIKE', '%'. $filter['search'] .'%')
-    			// ->orWhere('am', 'LIKE', '%'. $filter['search'] .'%');
+				$search = $filter['search'];
+				$query->where(function($query) use ($search){
+					$query->where('key', 'LIKE', '%'.$search.'%')
+						  ->orWhere('en', 'LIKE', '%'.$search.'%');
+				});
     		}
 		}
 		if(isset($filter['type']) && $filter['type'] != -1 ){
@@ -54,4 +55,3 @@ class Dictionary extends Model
     	return $return;
     }
 }
-

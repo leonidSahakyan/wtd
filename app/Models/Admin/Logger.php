@@ -10,7 +10,9 @@ class Logger extends Model
 
     protected $fillable = [
         'owner_id',
-        'type'
+        'type',
+        'data',
+        'owner_type',
     ];
 
     public function setUpdatedAtAttribute($value)

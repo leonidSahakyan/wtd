@@ -1,12 +1,3 @@
-<script type="text/javascript">
-	if(typeof(itemPopup) != "undefined"){
-		$( itemPopup ).one( "loaded", function(e){
-			@if($mode == 'add')
-			Loading.remove($('#add_item'));
-			@endif
-		});
-	}
-</script>
 <form id="save-item-form" method="post">
     <div class="row">
         @csrf
@@ -24,16 +15,21 @@
                             <input type="text" name="key" id="key" readonly class="form-control" value="{{$item->key}}"/>
                             </span>
                         </div>
+                        <div class="form-group col-12">
+                            <span class="el_item">Type:
+                            <input type="text" name="type" id="Type" readonly class="form-control" value="{{$item->type}}"/>
+                            </span>
+                        </div>
                     </div>
                     <div class="my-2"></div>
                     <!-- Tab nav start-->
-                    <div class="card-header border-bottom" style="background-color:#fff;">
+                    <!-- <div class="card-header border-bottom" style="background-color:#fff;">
                         <ul class="nav nav-tabs card-header-tabs" id="dashboardNav" role="tablist">
                             @foreach (Session::get('bLangs') as $index => $lang)
                                 <li class="nav-item mr-1"><a class="nav-link @if($index == 0) active @endif" id="multi_content_{{ $lang['lang'] }}-pill" href="#multi_content_{{ $lang['lang'] }}" data-toggle="tab" role="tab" aria-controls="multi_content_{{ $lang['lang'] }}" aria-selected="@if($index == 0) true @else false @endif">{{ $lang['title'] }}</a></li>
                             @endforeach
                         </ul>
-                    </div>
+                    </div> -->
                     <div class="my-2"></div>
                     <!-- Tab nav start-->
                     <!-- Tab content start-->
@@ -41,14 +37,15 @@
                         @foreach (Session::get('bLangs') as $index => $lang)
                         <?php $title = $lang['lang']?>
                         <!-- Dashboard Tab Pane 1-->
-                        <div class="tab-pane fade @if($index == 0) show active @endif" id="multi_content_{{ $lang['lang'] }}" role="tabpanel" aria-labelledby="multi_content_{{ $lang['lang'] }}-pill">
-                            <div class="container mt-4">
+                        <!-- <div class="tab-pane fade @if($index == 0) show active @endif" id="multi_content_{{ $lang['lang'] }}" role="tabpanel" aria-labelledby="multi_content_{{ $lang['lang'] }}-pill"> -->
+                            <div class="container p-0">
                                 <div class="form-group">
                                     <label class="small mb-1" for="{{ $lang['lang'] }}">Title</label>
-                                    <input class="form-control" id="{{ $lang['lang'] }}" name="{{ $lang['lang'] }}" type="text" placeholder="{{$item->key}}" value="{{$item->$title}}" />
+                                    <input class="form-control" id="{{ $lang['lang'] }}" name="title" type="text" placeholder="{{$item->key}}" value="{{$item->$title}}" />
                                 </div>
                             </div>
-                        </div>
+                            
+                        <!-- </div> -->
                         @endforeach
                         <div class="modal-buttons">
                                 <button type="button"  class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -87,6 +84,7 @@ function save(){
                 // tinymce.execCommand('mceRemoveControl', true, '.mytextarea');
                 toastr['success']('Saved.', 'Success');
                 window.datatable.ajax.reload(null, false);
+                $('#sync').attr('disabled',false);
                 itemPopup.close();
             }
             Loading.remove($('#saveItemBtn'));

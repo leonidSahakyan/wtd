@@ -27,8 +27,8 @@
                     <div class="small text-muted">Status</div>
                     <select class="form-control" name="filter_status" id="filter_status">
                         <option value=''>-- All--</option>
-                        <option value='published'>Published</option>
-                        <option value='unpublished'>Unpublished</option>
+                        <option value='1'>Published</option>
+                        <option value='0'>Unpublished</option>
                     </select>
                 </div>
                 <div class="table-responsive">
@@ -157,8 +157,11 @@
 
             window.datatable = dataTable;  
             
+            $('#filter_status').change(function(){
+                dataTable.draw();
+            });
+
             $("[name='dataTable_length']").change(function(){
-                console.log('asdasd');
                 var info = dataTable.page.info();
                 if(info.length == "-1"){
                     $( "#dataTable" ).sortable( "enable" );   

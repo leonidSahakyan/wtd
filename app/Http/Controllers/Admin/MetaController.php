@@ -6,7 +6,6 @@ use App\Models\Admin\meta;
 use App\Http\Controllers\Controller;
 use Validator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\Admin\ImageDB;
 
 
@@ -21,9 +20,7 @@ class MetaController extends Controller
 
     public function metaData(Request $request){
         $model = new meta();
-        $filter = array('search' => $request->input('search'),
-            'status' => $request->input('filter_status'),
-            'featured'=> $request->input('featured',false));
+        $filter = false;
 
         $items = $model->getAll(
             $request->input('start'),
@@ -66,9 +63,9 @@ class MetaController extends Controller
     public function saveMeta(Request $request){
 
         $validator  = Validator::make($request->all(), [
-            'title'         => 'string',
-            'image'         => '',
-            'description'   => 'string'
+            'title'         => 'string|nullable',
+            'image'         => 'int|nullable',
+            'description'   => 'string|nullable'
         ]);
 
         if ($validator->fails()) {
@@ -94,6 +91,10 @@ class MetaController extends Controller
         if ($item->image_id) {
             $imageDB = ImageDB::find($item->image_id);
             $imageDB->save();
+        }
+
+        if($item->pagename != 'home'){
+            $item->published   = $data['published'];
         }
 
         $item->title       = $data['title'];

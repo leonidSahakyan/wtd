@@ -17,7 +17,10 @@
     </header>
     <div class="container mt-n10">
         <div class="card">
-            <div class="card-header"></div>
+            <div class="card-header">
+                <button class="btn btn-primary btn-sm" id="add_item" type="button">Add</button>
+                <button class="btn btn-danger btn-sm" id="remove_item" type="button">Remove</button>
+            </div>
             <div class="card-body">
                 @if($collections)
                 <div class="form-group col-md-2 float-right nopadding" style="margin-bottom: 10px!important;">
@@ -141,7 +144,7 @@
                     { "data": 'ordering', 'name': 'ordering',"orderable": true},
                     { "data": 'sku', 'name': 'sku',"orderable": true},
                     { "data": 'title', 'name': 'title',"orderable": true},
-                    { "data": "price", "name":'price', "orderable": true },
+                    { "data": "price", "name":'price', "orderable": true, render : function ( data, type, row, meta) {return "$"+row.price}},
                     { "data": "status", "name":'status', "orderable": true , "sClass": "content-middel",
                     render: function ( data, type, row, meta) {
                         switch(row.status){
@@ -214,11 +217,57 @@
 
             $('#dataTable').on('click', '.item_edit', function (e) {
                 editId = $(this).attr('edit_item_id');
-                itemPopup.setTitle('Order');
+                itemPopup.setTitle('Edit');
                 itemPopup.load("{{route('productGet')}}?id="+editId, function () {
                     this.open();
                 });
             });
+
+            $('#add_item').on('click', function (e) {
+                Loading.add($('#add_item'));
+                itemPopup.setTitle('Add');
+                itemPopup.load("{{route('productGet')}}", function () {
+                    this.open();
+                });
+            });
+
+
+            $('#dataTable tbody').on('click', 'tr td:not(.selectOff)', function (e) {
+                $(this).parent('tr').toggleClass('selected');
+            });
+
+            $("#remove_item").on('click', function (e) {
+                if(dataTable.rows('.selected').data().length <= 0){
+                    toastr['info']("Please select item", 'Information');    
+                }else{
+                    var rows = [];
+                    dataTable.rows('.selected').data().each(function (row) {
+                        rows.push(row.id);    
+                    })
+                    if(rows.length <= 0){
+                        toastr['info']("Please select item", 'Information');    
+                        return
+                    }
+                    bootbox.confirm("Are you sure?", function(result) {
+                        if(result){
+                            $.ajax({
+                            type: "POST",
+                            url: "{{route('productRemove')}}",
+                            dataType: 'JSON',
+                            data:{_token: "<?php echo csrf_token(); ?>", ids:rows},
+                                success: function(response){
+                                    if(response.status == 1){
+                                        datatable.ajax.reload(null, false);
+                                    }else{
+                                        toastr['error'](response.message, 'Error');
+                                    }
+                                }
+                            });	
+                        }
+                    }); 
+                }
+            });
+            
         });
     </script>
 @endpush

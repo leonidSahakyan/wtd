@@ -22,14 +22,14 @@ class ProductController extends Controller
     }
     
     public function get(Request $request){
-        $collections = Collection::select('id','title')->where('status',1)->whereNull('deleted_at')->get();
+        $collections = Collection::select('id','title')->whereNull('deleted_at')->where('status',1)->get();
         
         $id = (int)$request['id'];
-        $mode = $id ? "add" : "edit";
+        $mode = $id ? "edit" : "add";
         if($id){
             $item = Product::findOrFail($id);
         }else{
-            $item = new Collection();
+            $item = new Product();
             $item->created_at = date("Y-m-d H:i:s");
             $max = DB::table('product')->max('ordering');
             $item->ordering = (is_null($max) ? 1 : $max + 1);
@@ -37,34 +37,26 @@ class ProductController extends Controller
             $item->save();
         }
         
-        $item->sizes = json_decode($item->sizes) ? json_decode($item->sizes) : []; 
-        $item->colors = json_decode($item->colors) ? json_decode($item->colors) : [];
-        
         $hasGallery = true;
         if($item->gallery_id == null){
             $hasGallery = false;
             $model = new Gallery();
-            $model->temp = 0;
+            $model->temp = null;
             $model->save();
             $item->gallery_id = $model->id;
             $item->save();
+            // DB::table('product')->where('id', $item->id)->update(['gallery_id' => $item->gallery_id]);
         }
-        // LOG CHANGE PRICE TODO
+        
+        $item->sizes = json_decode($item->sizes) ? json_decode($item->sizes) : []; 
+        $item->colors = json_decode($item->colors) ? json_decode($item->colors) : [];
 
-        // $orderUploads = DB::table('images')->select('filename','ext')->where('parent_id', $item->gallery_id)->get();
-        
-        // $orderReplacement =  DB::table('order_replacement')->where('order_id',$item->id)->get();
-        
-        // $masters =  DB::table('admin')->select('id','name','last_name')->where('role','master')->get();
-
-        // $logs =  DB::table('log')->where('owner_id',$item->id)->whereIn('type', ['order_created', 'order_paid'])->orderBy('created_at','desc')->get();
-        
         $data = json_encode(
             array('data' => 
                 (String) view('admin.product.item', array('item'=>$item,
                                                     'hasGallery'=>$hasGallery,
                                                     'logs'=>false,
-                                                    'asd'=>'asdasdkkk',
+                                                    'mode'=>$mode,
                                                     'collections'=>$collections,
                                                 )),'status' => 1)
             );
@@ -93,7 +85,6 @@ class ProductController extends Controller
     }
 
     public function save(Request $request){
-    
         $id = (int)$request['id'];
 
         $validator = \Validator::make($request->all(), [
@@ -107,7 +98,7 @@ class ProductController extends Controller
             'sku' => 'required|string|min:2|max:10'
         ]);
 
-        if ($validator->fails())return response()->json(['status'=>0,'errors'=>$validator->errors()->all()]);
+        if ($validator->fails())return response()->json(['status'=>0,'errors'=>$validator->errors()->first()]);
 
         $slug = strtolower(str_replace(' ', '-', $request->slug));
         $checkSlug = Product::where('slug', $slug)->where('id','!=',$id)->whereNull('deleted_at')->first();
@@ -136,9 +127,9 @@ class ProductController extends Controller
         }
         $item->sizes = json_encode($sizes);
 
-        if($item->temp != null)$item->temp == null;
+        if($item->temp != null)$item->temp = null;
         $item->title = $request->title;
-        $item->slug = $request->slug;
+        $item->slug = $slug;
         $item->sku = $request->sku;
         $item->parent_id = $request->parent_id;
         $item->description = $request->description;
@@ -163,5 +154,18 @@ class ProductController extends Controller
                 $newOrdering--;
             }
         }
+    }
+
+    public function remove(Request $request){
+        $ids = $request['ids'];
+        foreach ($ids as $id) {
+            $item = Product::find($id);
+            $item->status = 0;
+            $item->deleted_at = date("Y-m-d H:i:s");
+            $item->save();
+        }
+
+        $data = json_encode(array('status' => 1));
+        return $data;
     }
 }

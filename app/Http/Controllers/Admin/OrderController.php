@@ -6,11 +6,17 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin\Order;
-use App\Models\Admin\Gallery;
+use App\Models\Admin\Logger;
+use App\Models\Product;
+// use App\Models\Admin\Gallery;
+use App\Models\Admin\Collection;
 
 class OrderController extends Controller
 {
     public function index(){
+        $collections = Collection::select('id','title')->where('status',1)->whereNull('deleted_at')->get();
+
+        view()->share('collections', $collections);
         view()->share('menu', 'orders');
         return view('admin.orders');
     }
@@ -19,42 +25,48 @@ class OrderController extends Controller
         $id = (int)$request['id'];
         if(!$id) return 'error';
         
-        $query = DB::table('orders');
-        $query->select('orders.*','services.title','services_types.title as service_type_title')->where('orders.id', $id);
-        $query->leftJoin('services', 'services.id', '=', 'orders.service_id');
-        $query->leftJoin('services_types', 'services_types.id', '=', 'orders.service_type');
-        $item =  $query->first();
-
-        $hasGallery = false;
-        if($item->status != 'new'){
-            if($item->review_gallery_id == null){
-                $model = new Gallery();
-                $model->temp = 0;
-                $model->save();
-                $item->review_gallery_id = $model->id;
-                DB::table('orders')->where('id', $item->id)->update(['review_gallery_id' => $model->id]);
+        $order = Order::select('*')->where('id', $id)->first();
+        $orderItems =  DB::table('order_items')->where('order_id',$order->id)->get();
+        $productModel = new Product();
+        foreach($orderItems as $key => $orderItem){
+            $product = $productModel->getProductWithImage($orderItem->product_id,isset($orderItem->color) ? $orderItem->color: false);
+            if(isset($product->filename)){
+                $imagePath = asset('images/productAdmin/'.$product->filename.'.'.$product->ext.''); 
+            }else{
+                $imagePath = asset('asset/img/product-detail-nav-1'); 
             }
-            $hasGallery = true;
+            $orderItems[$key]->slug = $product->slug;
+            $orderItems[$key]->collection = $product->collection;
+            $orderItems[$key]->description = $product->description;
+            $orderItems[$key]->sku = $product->sku;
+            $orderItems[$key]->imagePath = $imagePath;
         }
-        $orderUploads = DB::table('images')->select('filename','ext')->where('parent_id', $item->gallery_id)->get();
-        
-        $orderReplacement =  DB::table('order_replacement')->where('order_id',$item->id)->get();
-        
-        $masters =  DB::table('admin')->select('id','name','last_name')->where('role','master')->get();
 
-        $logs =  DB::table('log')->where('owner_id',$item->id)->whereIn('type', ['order_created', 'order_paid'])->orderBy('created_at','desc')->get();
+        $country = DB::table('countries')->select('title')->where('id',$order->country_id)->first();
+        $logs =  DB::table('log')->where('owner_id',$order->id)->where('owner_type', 'order')->orderBy('created_at','desc')->get();
         
-        $data = json_encode(
-            array('data' => 
-                (String) view('admin.order', array('item'=>$item,
-                                                    'orderReplacement'=>$orderReplacement,
-                                                    'hasGallery'=>$hasGallery,
-                                                    'orderUploads'=>$orderUploads,
-                                                    'logs'=>$logs,
-                                                    'masters'=>$masters,
-                                                )),'status' => 1)
-            );
-        return $data; 
+        $invoce = false;
+        if($order->is_paid){
+            $query = DB::table('invoices');
+            $query->select('invoices.hash','invoices.created_at as created','billings.amount_total as amount','billings.created_at as paid','billings.type','billings.paypal_transaction_id')->where('invoices.order_id', $order->id)->where('invoices.status','paid');
+            $query->leftJoin('billings', 'billings.invoice_hash', '=', 'invoices.hash');
+            $invoce =  $query->first();
+        }
+
+        $data = [
+            'item'=>$order,
+            'invoce'=>$invoce,
+            'orderItems'=>$orderItems,
+            'logs'=>$logs,
+            'country'=>$country->title,
+        ];
+
+        $template = view('admin.order', $data)->render();
+        $res = [
+            'data' => $template,
+            'status' => 1
+        ];
+        return response()->json($res);
     }
 
     public function data(Request $request){
@@ -62,7 +74,7 @@ class OrderController extends Controller
 
         $filter = array(
             'status' => $request->input('filter_status'),
-            'type' => $request->input('filter_type'),
+            'search' => $request->input('search'),
             'start_date' => $request->input('start_date'),
             'end_date' => $request->input('end_date'),
         );
@@ -79,96 +91,39 @@ class OrderController extends Controller
         return $data;
     }
 
-    public function saveOverview(Request $request){
+    public function saveOrder(Request $request){
         $id = (int)$request['id'];
         if(!$id) return 'error';
+        $status = $request->status;
+        $comment = $request->comment;
 
-        $masterId = $request->master_id;
         $order = Order::find($id);
-        $masterMessage = 'Nothing to update';
-        if($masterId != $order->master_id){
-            if($order->master_id && $masterId == 0){
-                $masterMessage = 'Master successfully unassigned from order';
-            }
-            if(!$order->master_id && $masterId > 0){
-                $masterMessage = 'Master successfully assigned to order';
-            }
-            if($order->master_id && $masterId > 0){
-                $masterMessage = 'Master successfully changed';
-            }
-            $order->master_id = $masterId;
-            //TODO Notification to master
-            $order->save();
+        $message = 'Saved!';
+        if($status && $status != $order->status){
+            $payload = json_encode(array('old_status'=>$order->status,'new_status'=>$status));
+            Logger::create(['owner_id' => $order->id,'type' => 'status_changed','data'=>$payload,'created_at' => date("Y-m-d H:i:s"),'owner_type' => 'order']);
+
+            // $data = [
+            //     'sku' => $order->sku,
+            //     'hash' => $order->hash,
+            //     'email' => $order->email,
+            //     'phone' => $order->phone
+            // ];
+            // if($status == 'scheduled'){
+            //     event(new SendNotification('order_scheduled',$data));
+            // }
+            // if($status == 'done'){
+            //     event(new SendNotification('order_done',$data));
+            // }
+            // if($status == 'canceled'){
+            //     event(new SendNotification('order_canceled',$data));      
+            // }
+
+            $order->status = $status;
+            $message = 'Status changed';   
         }
-        return json_encode(array('status' => 1, 'message' => $masterMessage));
-    }
-    public function saveReview(Request $request){
-        $id = (int)$request['id'];
-        if(!$id) return 'error';
-        $review = $request['review'];
-
-        $order = Order::find($id);
-        $order->master_review = $review;
+        $order->comment = $comment;
         $order->save();
-
-        return json_encode(array('status' => 1, 'message' => "Success"));
+        return json_encode(array('status' => 1, 'message' => $message));
     }
-    public function saveNotes(Request $request){
-        $id = (int)$request['id'];
-        if(!$id) return 'error';
-        $notes = $request['notes'];
-
-        $order = Order::find($id);
-        $order->notes = $notes;
-        $order->save();
-
-        return json_encode(array('status' => 1, 'message' => "Success"));
-    }
-    // public  function build_options_tree($cats,$parent_id,$hh,$self,$disabelChiled,$selectedArray){
-        
-    //     $hh = $hh.'--';
-        
-    //     if(!is_array($cats) || !isset($cats[$parent_id])){
-    //          return null;
-    //     }
-
-    //     $tree = '';
-
-    //     foreach($cats[$parent_id] as $cat){
-    //         $catId = $cat["id"];
-    //         $catParentId = $cat["parent_id"];
-    //         $catTitle = $cat["title"];
-            
-    //         $disabled = false;
-    //         $selected = false;
-
-    //         // If Set some self category
-    //         if($self){
-    //             $selfId = $self["id"];
-    //             $selfParentId = $self["parent_id"];
-
-    //             // Self or this or parent of this category, or self chiled 
-    //             if(($catParentId === $selfId) || $catId == $selfId){//$disabelChiled
-    //                 $disabelChiled = true;
-    //                 $disabled = true;
-    //             }
-
-    //             //if this category is parent of self category
-    //             if($catId == $selfParentId){
-    //                 $selected = true;
-    //             }
-    //         }
-
-    //         if($selectedArray && in_array($catId,$selectedArray)){
-    //             $selected = true;
-    //         }
-
-    //         $disabled = $disabled ? 'disabled' : '';
-    //         $selected = $selected ? 'selected="selected"' : '';
-
-    //         $tree .= '<option '.$disabled.' '.$selected.' value='.$catId.'>'.$hh.' '.$catTitle.'</option>';
-    //         $tree .= $this->build_options_tree($cats,$catId,$hh,$self,$disabelChiled,$selectedArray);
-    //     }
-    //     return $tree;
-    // }
 }

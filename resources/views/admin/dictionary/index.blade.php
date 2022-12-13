@@ -17,10 +17,9 @@
     </header>
     <div class="container mt-n10">
         <div class="card">
-            <!-- <div class="card-header">
-                <button class="btn btn-primary btn-sm" id="add_item" type="button">Add</button>
-                <button class="btn btn-danger btn-sm" id="remove_item" type="button">Remove</button>
-            </div> -->
+            <div class="card-header">
+                <button class="btn btn-primary btn-sm" id="sync" onclick="sync()" @if($synced == 1) disabled="disabled" @endif type="button">Sync</button><small><br/>Please, not sync after each words, sync when you finished work on dictionary</small>
+            </div>
 
             <div class="d-flex align-items-end flex-column mb-3 p-3" >
                 <div class="form-group col-md-2 float-right nopadding p-2"  >
@@ -28,7 +27,6 @@
                             <option value=''>-- All--</option>
                             <option value='dictionary'>Dictionary</option>
                             <option value='email'>Email</option>
-                            <option value='notification'>Notification</option>
                     </select>
                 </div>
             </div>
@@ -39,9 +37,18 @@
                             <tr>
                                 <th>Key</th>
                                 <th>Translation</th>
+                                <th>Type</th>
                                 <th>Edit</th>
                             </tr>
                         </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Key</th>
+                                <th>Translation</th>
+                                <th>Type</th>
+                                <th>Edit</th>
+                            </tr>
+                        </tfoot>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -87,15 +94,17 @@
                 "columns": [
                     { "data": "key", "name":'key', "orderable": true },
                     { "data": "title", "name":'title', "orderable": true },
+                    { "data": "type", "name":'type', "orderable": true },
                     { "data": "key", "name":'edit', "orderable": false, "sClass": "content-middel selectOff", 
 	            	    render: function ( data, type, row, meta) {
-	            	    return '<a href="javascript:;" edit_item_id="'+row.key+'" class="item_edit"><button class="btn btn-datatable btn-icon btn-transparent-dark"><i data-feather="edit"></i></button></a>';
+                            return '<a href="javascript:;" edit_item_id="'+row.key+'" class="item_edit"><button class="btn btn-datatable btn-icon btn-transparent-dark"><i data-feather="edit"></i></button></a>';
 	                }},
                 ],
                 "columnDefs": [
-                    {"width": "46%", "targets": 0},
-                    {"width": "46%", "targets": 1},
-                    {"width": "6%", "targets": 2},
+                    {"width": "40%", "targets": 0},
+                    {"width": "40%", "targets": 1},
+                    {"width": "10%", "targets": 2},
+                    {"width": "10%", "targets": 3},
                 ],
                 "order": [
                     ['0', "desc"]
@@ -124,8 +133,6 @@
                 });
             });
         
-
-
             $('#dataTable tbody').on('click', 'tr td:not(.selectOff)', function (e) {
                 $(this).parent('tr').toggleClass('selected');
             });
@@ -135,6 +142,25 @@
 
             
         });
+        function sync(){
+            Loading.add($('#sync'));
+            $.ajax({
+            type: "POST",
+            url: "{!! route('aSyncDictionary') !!}",
+            dataType: 'JSON',
+            data:{_token: "<?php echo csrf_token(); ?>"},
+                success: function(response){
+                    if(response.status == 1){    
+                        toastr['success']('Synced', 'Success');
+                        $('#sync').attr('disabled','disabled')
+                    }
+                    if(response.status == 0){
+                        toastr['error'](response.message, 'Error');
+                    }
+                    Loading.remove($('#sync'));
+                }
+            });
+        }
     </script>
 @endpush
 @endsection
