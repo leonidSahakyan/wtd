@@ -169,6 +169,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <hr>
                                             </div>
                                                 <!-- <h5 class="card-title">Card Image (Left)</h5>
                                                 <p class="card-text">Use the Bootstrap grid with utility classes to create this card variant.</p>
