@@ -2,10 +2,10 @@
 
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\DocumentController;
-use App\Http\Controllers\AuthController;
+// use App\Http\Controllers\DocumentController;
+// use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
+// use Illuminate\Http\Request;
 use App\Helpers\Helper;
 /*
 |--------------------------------------------------------------------------
@@ -61,7 +61,13 @@ Route::get('product/{slug}', function ($slug) {
 Route::post('/add-to-cart', [WelcomeController::class, 'addToCart'])->name('add-to-cart');
 Route::post('/update-cart', [WelcomeController::class, 'updateCart'])->name('update-cart');
 Route::post('/remove-cart', [WelcomeController::class, 'removeCart'])->name('remove-cart');
-Route::post('/checkout', [WelcomeController::class, 'checkout'])->name('checkout');
+Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+Route::post('/process-to-checkout', [OrderController::class, 'processToCheckout'])->name('processToCheckout');
+Route::post('/paypal-handler', [OrderController::class, 'handlePaypal'])->name('paypal-handler');
+Route::get('/success/{hash}', [OrderController::class, 'checkoutSuccess'])->name('checkout_success');
+Route::get('/fail/{hash}', [OrderController::class, 'checkoutSuccessFail'])->name('checkout_success_fail');
+Route::get('/cancel/{hash}', [OrderController::class, 'checkoutFail'])->name('checkout_fail');
+Route::get('/order/{hash}', [OrderController::class, 'order'])->name('order');
 // Route::get('/auth', [WelcomeController::class, 'auth'])->name('user-auth');
 
 ///owner
@@ -76,7 +82,6 @@ Route::post('/checkout', [WelcomeController::class, 'checkout'])->name('checkout
 // Route::get('/cancel/{hash}', [OrderController::class, 'checkoutFail'])->name('checkout_fail');
 // Route::get('/order/{hash}', [OrderController::class, 'order'])->name('order');
 // Route::post('/process-to-checkout', [OrderController::class, 'processToCheckout'])->name('processToCheckout');
-// Route::post('/paypal-handler', [OrderController::class, 'handlePaypal'])->name('paypal-handler');
 
 ///contact
 // Route::post('/contact-request', [WelcomeController::class, 'send']);

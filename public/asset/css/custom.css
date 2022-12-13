@@ -19,6 +19,8 @@
 }
 label.error{
     display: block;
+    font-size: 12px !important;
+    color: red;
 }
 
 .custom_self_select{
@@ -30,4 +32,12 @@ label.error{
     box-shadow: unset;
     -webkit-appearance: none;
     appearance: none;
+ }
+
+ #paypal-button-container{
+    display: none;
+ }
+ #continueBtn{
+    display: none;
+    padding: 18px 88px !important;
  }

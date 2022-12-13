@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Intervention\Image\Facades\Image;
+// use Intervention\Image\Facades\Image;
 use Mail;
-use Session;
+use App\Models\Product;
+// use Session;
 
 class WelcomeController extends Controller
 {
@@ -110,9 +111,10 @@ class WelcomeController extends Controller
         
         $subTotal = 0;
         $itemsCount = 0;
+        $productModel = new Product();
         foreach($cart['items'] as $cartItem){
             //:TODO if no item
-            $product = $this->getProdut($cartItem);
+            $product = $productModel->getProductWithImage($cartItem['id'],isset($cartItem['color']) ? $cartItem['color']: false);
             if($product->filename){
                 $product->imagePath = asset('images/productList/'.$product->filename.'.'.$product->ext.''); 
             }else{
@@ -133,22 +135,51 @@ class WelcomeController extends Controller
         return view('app.cart');
     }
 
-    private function getProdut($cartItem){
-        $query = DB::table('product')->select('product.*','images.filename','images.ext','images.color')->where('product.id',$cartItem['id']);
-        if(isset($cartItem['color'])){
-            $query->where('images.color',$cartItem['color']);
-        }
-        $query->leftJoin('galleries','galleries.id','=','product.gallery_id');
-        $query->leftJoin('images','images.parent_id','=','galleries.id');
-        $item = $query->orderBy('images.ordering','asc')->first();
-        if(!$item){
-            $query = DB::table('product')->select('product.*','images.filename','images.ext','images.color')->where('product.id',$cartItem['id']);
-            $query->leftJoin('galleries','galleries.id','=','product.gallery_id');
-            $query->leftJoin('images','images.parent_id','=','galleries.id');
-            $item = $query->orderBy('images.ordering','asc')->first();    
-        }
-        return $item;
-    }
+    // private function getProdut($cartItem){
+    //     $query = DB::table('product')->select('product.*','images.filename','images.ext','images.color')->where('product.id',$cartItem['id']);
+    //     if(isset($cartItem['color'])){
+    //         $query->where('images.color',$cartItem['color']);
+    //     }
+    //     $query->leftJoin('galleries','galleries.id','=','product.gallery_id');
+    //     $query->leftJoin('images','images.parent_id','=','galleries.id');
+    //     $item = $query->orderBy('images.ordering','asc')->first();
+    //     if(!$item){
+    //         $query = DB::table('product')->select('product.*','images.filename','images.ext','images.color')->where('product.id',$cartItem['id']);
+    //         $query->leftJoin('galleries','galleries.id','=','product.gallery_id');
+    //         $query->leftJoin('images','images.parent_id','=','galleries.id');
+    //         $item = $query->orderBy('images.ordering','asc')->first();    
+    //     }
+    //     return $item;
+    // }
+
+
+    // public function checkout(Request $request){
+    //     $request->validate([
+    //         'first_name'      => 'required|string|max:100',
+    //         'last_name'       => 'required|string|max:100',
+    //         'email'       => 'required|email:rfc',
+    //         'phone'           => 'required|string|max:30',
+    //         'shipping_country'      => 'required|int',
+    //         'city'      => 'required|string',
+    //         'address'       => 'required|string',
+    //         'post_code'       => 'nullable|string',
+    //         'notes'       => 'nullable|string',
+    //     ]);
+
+    //     $order = new Order();
+    //     $order->sku =  uniqid("O-");
+    //     $order->hash =  Str::uuid()->toString();
+    //     $order->first_name = $request->first_name;
+    //     $order->last_name  = $request->last_name;
+    //     $order->email      = $request->email;
+    //     $order->phone      = $request->phone;
+    //     $order->shipping_country = $request->shipping_country;
+    //     $order->city    = $request->city;
+    //     $order->address    = $request->address;
+    //     $order->notes = $request->notes;
+        
+    //     $submittedPrice = $request->total_price;
+    // }
     public function updateCart(Request $request){
         // $validator = Validator::make($request->all(),[
         //     'id' => 'required|int',
@@ -199,10 +230,8 @@ class WelcomeController extends Controller
         \Session::put('cart', $cart);
 
         $cartCount = 0;
-        $total = 0;
         foreach($cart['items'] as $c){
             $cartCount += $c['qty'];
-            // $total += 
         }
         return json_encode(array('status' => 1,'cart_count' => $cartCount));
     }

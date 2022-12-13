@@ -27,8 +27,12 @@ $( document ).on( "click", ".pagination a, .collections-menu .link-collection", 
 
 $( document ).on( "submit", "#checkout", function(e) {
 	e.preventDefault();
-	
+
+	$('#checkout label.error').remove();
+
 	var formData = new FormData(this);
+	total = parseInt($("#checkout #total_price").html())
+	formData.append('total', total);
 
 	$.ajax({
 		type: 'POST',
@@ -40,13 +44,29 @@ $( document ).on( "submit", "#checkout", function(e) {
 		dataType: 'json',
 		success: function(response) {
 			if(response.status == 1){
-				$('#btn-cart figure').html(response.cart_count)
-			}else{
-				alert(response.message)
+				$("#hash").val(response.hash);
+				triggerCheckout('disable')
+				// window.location = "/checkout/" + hash;
+				
 			}
 		},
 		error: function(response) {
-			console.log(response)
+			if(response.responseJSON.errors){
+				errors = response.responseJSON.errors
+				$.each( errors, function( key, value ) {
+					if($("#"+key).length > 0){
+						$( "#"+key ).after( '<label class="error">'+value+'</label>' );
+					}
+					if(key == 'server'){
+						alert(value);
+					}
+				});
+				$('html, body').animate({
+					scrollTop: $(".login_page").offset().top-200
+				}, 500);
+			}else{
+				alert('Something wrong, pls try again!');
+			}
 			return;
 		}
 	});
@@ -226,6 +246,9 @@ $(document).ready(function() {
 	});
 
 	$('#cart-page .newQty').on('change', function(el) {
+		if(!window.editCart){
+			return false;
+		}
 		newQtyEl = $(el.currentTarget)
 		newQty = newQtyEl.val();
 		loopIndex = newQtyEl.attr('attr_loop')
@@ -274,6 +297,9 @@ $(document).ready(function() {
 	})
 	$('#cart-page .product-remove').on('click', function(e) {
 		e.preventDefault();
+		if(!window.editCart){
+			return false;
+		}
 		removeEl = $(e.currentTarget)
 		loopIndex = removeEl.attr('attr_loop')
 		itemData = $("#cart-page #item_data_"+loopIndex).val();
@@ -343,4 +369,26 @@ function calcTotal(){
 	$('#subtotal_item_count').html(totalQty)
 	$('#subtotal_price').html(subTotal)
 	$('#total_price').html(total)
+}
+function triggerCheckout(stauts){
+	if(stauts == 'disable'){
+		window.editCart = false
+		$('.login_page input').attr('disabled',true); 
+		$('.login_page textarea').attr('disabled',true); 
+		$('.login_page select').attr('disabled',true); 
+		$('.newQty').attr('disabled',true); 
+		$('#checkoutBtn').attr('disabled',true).hide();
+		$('#paypal-button-container').show();
+		$('#continueBtn').attr('disabled',false).show();
+	}
+	if(stauts == 'enable'){
+		window.editCart = true
+		$('.login_page input').attr('disabled',false); 
+		$('.login_page textarea').attr('disabled',false); 
+		$('.login_page select').attr('disabled',false); 
+		$('.newQty').attr('disabled',false); 
+		$('#paypal-button-container').hide();
+		$('#checkoutBtn').attr('disabled',false).show();
+		$('#continueBtn').attr('disabled',true).hide();
+	}
 }

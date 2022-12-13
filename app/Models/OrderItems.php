@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OrderReplacement extends Model
+class OrderItems extends Model
 {
-	protected $table = 'order_replacement';
+	protected $table = 'order_items';
     use HasFactory;
 }
