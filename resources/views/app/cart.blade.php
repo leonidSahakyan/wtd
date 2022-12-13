@@ -8,7 +8,7 @@
 	<div class="container">
 		<h1 class="title-font title-banner">My Cart</h1>
 		<ul class="breadcrumb des-font">
-			<li><a href="Home1.html">Home</a></li>
+			<li><a href="{{route('homepage')}}">Home</a></li>
 			<li class="active">Cart</li>
 		</ul>
 	</div>
