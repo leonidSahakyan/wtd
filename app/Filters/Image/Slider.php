@@ -10,7 +10,7 @@ class Slider implements FilterInterface
     {
     	return $image->fit(658, 796, function ($constraint) {
             $constraint->aspectRatio();
-		    $constraint->upsize();
-		});
+            $constraint->upsize();
+        });
     }
 }

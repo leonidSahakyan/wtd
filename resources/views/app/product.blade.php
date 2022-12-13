@@ -6,7 +6,7 @@
 		<ul class="breadcrumb des-font">
 			<li><a href="{{route('homepage')}}">Home</a></li>
 			<li><a href="{{route('shop')}}">Shop</a></li>
-			<li class="active">Embossed backpack in brown</li>
+			<li class="active">{{$product->title}}</li>
 		</ul>
 	</div>
 </div>

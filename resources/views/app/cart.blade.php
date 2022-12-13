@@ -43,6 +43,7 @@
                         <div class="product-info">
                             <a href="{{route('product',['slug'=>$product->slug])}}" class="title-font link-default">{{$product->title}}</a>
                             <p class="number-font margin_top_20">SKU: <span class="menu-child-font">{{$product->sku}}</span></p>
+                            <p class="number-font margin_top_20">Collection: <span class="menu-child-font">{{$product->collection}}</span></p>
 							@if(isset($product->cart_data['color']))
                             <p class="number-font margin_top_20">Color: <span class="menu-child-font capital">{{$product->cart_data['color']}}</span></p>
 							@endif

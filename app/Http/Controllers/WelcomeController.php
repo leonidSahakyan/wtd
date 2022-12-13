@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Mail;
+use App\Models\Meta;
 use App\Models\Product;
 
 class WelcomeController extends Controller
@@ -38,6 +38,14 @@ class WelcomeController extends Controller
             $col->items_count = $items_count;   
         }
 
+        $metaModel = new Meta();
+        if($id){
+            $meta = $metaModel->getMetaCollection($id);
+        }else{
+            $meta = $metaModel->getMeta('shop');
+        }
+		view()->share('meta', $meta);
+
         view()->share('collections', $collections);
         view()->share('menu', 'shop');
         return view('app.shop');
@@ -61,10 +69,15 @@ class WelcomeController extends Controller
         ->where('status',1)->where('featured',1)->whereNull('product.temp')
         ->join('images', 'images.id', '=', 'product.image_id')->inRandomOrder()->limit(20)->get();
 
+        $metaModel = new Meta();
+		$meta = $metaModel->getMeta('home');
+
+		view()->share('meta', $meta);
         view()->share('menu', 'home');
         view()->share('products', $products);
         view()->share('collections', $collections);
         return view('app.welcome');
+
     }
     public function product($id){
         $product = DB::table('product')->where('id',$id)->where('status',1)->whereNull('deleted_at')->first();
@@ -90,7 +103,11 @@ class WelcomeController extends Controller
         }
         // $imagesJson = json_decode($imagesArray) ? json_decode($imagesArray) : [];
         view()->share('menu', false);
-    
+        
+        $metaModel = new Meta();
+		$meta = $metaModel->getMetaProduct($id);
+		view()->share('meta', $meta);
+
         return view('app.product',compact('product','collection','imagesArray','defaultColor'));
     }
 

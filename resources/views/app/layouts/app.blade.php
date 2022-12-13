@@ -1,12 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>WTD1</title>
-	<meta name="format-detection" content="telephone=no">
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<link rel="icon" href="{!! asset('asset/img/favicon.png') !!}" type="image/x-icon"/>
+    @include('app.meta')
     <!-- jquery ui -->
 	<link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
     <!--  -->

@@ -59,9 +59,8 @@ return array(
         'productAdmin' => 'App\Filters\Image\ProductAdmin',
         'productItem' => 'App\Filters\Image\ProductItem',
         'productThumb' => 'App\Filters\Image\ProductThumb',
+        'metaThumb' => 'App\Filters\Image\MetaThumb',
         'slider' => 'App\Filters\Image\Slider',
-        'services' => 'App\Filters\Image\Services',
-        'document' => 'App\Filters\Image\Document',
     ),
 
     /*
