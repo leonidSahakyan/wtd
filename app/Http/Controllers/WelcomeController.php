@@ -35,12 +35,11 @@ class WelcomeController extends Controller
 			return view('app.product-list-item-ajax',['type' => $listType]);
 		}
 
-        $collections = DB::table('collections')
-        ->select('collections.title as title', 'collections.slug as slug',DB::raw('count(*) as items_count'))
-        ->join('product', 'product.parent_id', '=', 'collections.id')->whereNull('collections.deleted_at')
-        ->where('collections.status', 1)
-        ->orderBy('collections.ordering', 'DESC')->groupBy('collections.title','collections.slug')->get();
-
+        $collections = DB::table('collections')->select('id','title', 'slug')->whereNull('deleted_at')->orderBy('ordering', 'DESC')->get();
+        foreach($collections as $col){
+            $items_count = DB::table('product')->whereNull('deleted_at')->where('status',1)->where('parent_id',$col->id)->count();
+            $col->items_count = $items_count;   
+        }
 
         view()->share('collections', $collections);
         view()->share('menu', 'shop');
