@@ -1,7 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
-# /public/content
+/public/content
 /storage/*.key
 /vendor
 .env
