@@ -174,7 +174,6 @@
 	</div>
 @endif
 <!--  -->
-*/ ?>
 @push('script')
 	@if(count($imagesArray) > 0)
 		<script>
