@@ -44,8 +44,8 @@ class WelcomeController extends Controller
         $metaModel = new Meta();
         $collectionId = false;
         if($id){
-            $collectionId = $id['id'];
-            $meta = $metaModel->getMetaCollection($collectionId);
+            $collectionId = $id;
+            $meta = $metaModel->getMetaCollection($id);
         }else{
             $meta = $metaModel->getMeta('shop');
         }
