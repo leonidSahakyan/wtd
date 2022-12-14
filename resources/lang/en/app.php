@@ -16,4 +16,7 @@
 	"homepage_video_title" => "skin tones<br>exclisive collection",
 	"homepage_video_url" => "https://www.youtube.com/watch?v=_sI_Ps7JSEk",
 	"instagram_url" => "https://instagram.com",
+	"related_products_title" => "Related products",
+	"related_products_text" => "I did not even know that there were any better conditions to escape to, but I was more than willing 
+	to take my chances among people fashioned after.",
 ];

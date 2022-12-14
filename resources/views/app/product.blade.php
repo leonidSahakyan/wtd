@@ -135,146 +135,44 @@
 		</div>
 	</div>
 </div>
-<?php /*
+@if(count($related) > 0)
 	<!--  -->
 	<div class="container margin_bottom_130 section-bestseller-home1">
 		<div class="row">
 			<div class="col-md-12">
-				<h1 class="title-font margin_bottom_10 title-bestseller">Related products</h1>
-				<p class="des-font margin_bottom_50 des-bestseller">I did not even know that there were any better conditions to escape to, but I was more than willing 
-					to take my chances among people fashioned after.</p>
-			<div class="slick-bestseller">
-				<div class="product">
-					<div class="img-product relative">
-						<a href="#"><img src="{!! asset('asset/img/product_1.jpg') !!}" class="img-responsive" alt=""></a>
-						<figure class="absolute uppercase label-new title-font text-center">new</figure>
-						<div class="product-icon text-center absolute">
-							<form method="post" action="/cart/add" enctype="multipart/form-data" class="inline-block icon-addcart">
-  							  <input type="hidden" name="id" value="" />
-  							  <button type="submit" name="add" class="enj-add-to-cart-btn btn-default"><i class="ti-bag"></i></button>
-  							</form>
-  							<a href="#" class="icon-heart inline-block"><i class="ti-heart"></i></a>
-  							<a href="#" class="engoj_btn_quickview icon-quickview inline-block" title="quickview">
-      						  <i class="ti-more-alt"></i>
-      						</a>
+				<h1 class="title-font margin_bottom_10 title-bestseller">{{trans('app.related_products_title')}}</h1>
+				<p class="des-font margin_bottom_50 des-bestseller">{{trans('app.related_products_text')}}</p>
+
+				<div class="slick-bestseller">
+					@foreach($related as $rel)
+					<div class="product">
+						<div class="img-product relative">
+							<a href="{{route('product',['slug'=>$product->slug])}}"><img src="{{asset('images/productList/'.$rel->file_name.'.'.$rel->ext)}}" class="img-responsive" alt="{{$product->title}}"></a>
+							<!-- <figure class="absolute uppercase label-new title-font text-center">new</figure>
+							<div class="product-icon text-center absolute">
+								<form method="post" action="/cart/add" enctype="multipart/form-data" class="inline-block icon-addcart">
+								<input type="hidden" name="id" value="" />
+								<button type="submit" name="add" class="enj-add-to-cart-btn btn-default"><i class="ti-bag"></i></button>
+								</form>
+								<a href="#" class="icon-heart inline-block"><i class="ti-heart"></i></a>
+								<a href="#" class="engoj_btn_quickview icon-quickview inline-block" title="quickview">
+								<i class="ti-more-alt"></i>
+								</a>
+							</div> -->
+						</div>
+						<div class="info-product text-center">
+							<h4 class="des-font capital title-product space_top_20"><a href="{{route('product',['slug'=>$product->slug])}}">{{$product->title}}</a></h4>
+							<p class="number-font price-product"><span class="price">${{$product->price}}.00</span></p>
 						</div>
 					</div>
-					<div class="info-product text-center">
-						<h4 class="des-font capital title-product space_top_20"><a href="#">embossed backpack in brown</a></h4>
-						<p class="number-font price-product"><span class="price">$123.00</span></p>
-					</div>
+					<!--  -->
+					@endforeach
 				</div>
-				<!--  -->
-				<div class="product">
-					<div class="img-product relative">
-						<a href="#"><img src="{!! asset('asset/img/product_1.jpg') !!}" class="img-responsive" alt=""></a>
-						<figure class="absolute uppercase label-sale title-font text-center">sale</figure>
-						<div class="product-icon absolute text-center">
-							<form method="post" action="/cart/add" enctype="multipart/form-data" class="inline-block icon-addcart">
-  							  <input type="hidden" name="id" value="" />
-  							  <button type="submit" name="add" class="enj-add-to-cart-btn btn-default"><i class="ti-bag"></i></button>
-  							</form>
-  							<a href="#" class="icon-heart inline-block"><i class="ti-heart"></i></a>
-  							<a href="#" class="engoj_btn_quickview icon-quickview inline-block" title="quickview">
-      						  <i class="ti-more-alt"></i>
-      						</a>
-						</div>
-					</div>
-					<div class="info-product text-center">
-						<h4 class="des-font capital title-product space_top_20"><a href="#">embossed backpack in brown</a></h4>
-						<p class="number-font"><span class="price">$123.00</span></p>
-					</div>
-				</div>
-				<!--  -->
-				<div class="product">
-					<div class="img-product relative">
-						<a href="#"><img src="{!! asset('asset/img/product_1.jpg') !!}" class="img-responsive" alt=""></a>
-						<figure class="absolute uppercase label-new title-font text-center">new</figure>
-						<div class="product-icon absolute text-center">
-							<form method="post" action="/cart/add" enctype="multipart/form-data" class="inline-block icon-addcart">
-  							  <input type="hidden" name="id" value="" />
-  							  <button type="submit" name="add" class="enj-add-to-cart-btn btn-default"><i class="ti-bag"></i></button>
-  							</form>
-  							<a href="#" class="icon-heart inline-block"><i class="ti-heart"></i></a>
-  							<a href="#" class="engoj_btn_quickview icon-quickview inline-block" title="quickview">
-      						  <i class="ti-more-alt"></i>
-      						</a>
-						</div>
-					</div>
-					<div class="info-product text-center">
-						<h4 class="des-font capital title-product space_top_20"><a href="#">embossed backpack in brown</a></h4>
-						<p class="number-font"><span class="price">$123.00</span></p>
-					</div>
-				</div>
-				<!--  -->
-				<div class="product">
-					<div class="img-product relative">
-						<a href="#"><img src="{!! asset('asset/img/product_1.jpg') !!}" class="img-responsive" alt=""></a>
-						<figure class="absolute uppercase label-sale title-font text-center">sale</figure>
-						<div class="product-icon absolute text-center">
-							<form method="post" action="/cart/add" enctype="multipart/form-data" class="inline-block icon-addcart">
-  							  <input type="hidden" name="id" value="" />
-  							  <button type="submit" name="add" class="enj-add-to-cart-btn btn-default"><i class="ti-bag"></i></button>
-  							</form>
-  							<a href="#" class="icon-heart inline-block"><i class="ti-heart"></i></a>
-  							<a href="#" class="engoj_btn_quickview icon-quickview inline-block" title="quickview">
-      						  <i class="ti-more-alt"></i>
-      						</a>
-						</div>
-					</div>
-					<div class="info-product text-center">
-						<h4 class="des-font capital title-product space_top_20"><a href="#">embossed backpack in brown</a></h4>
-						<p class="number-font"><span class="price">$123.00</span></p>
-					</div>
-				</div>
-				<!--  -->
-				<div class="product">
-					<div class="img-product relative">
-						<a href="#"><img src="{!! asset('asset/img/product_1.jpg') !!}" class="img-responsive" alt=""></a>
-						<figure class="absolute uppercase label-sale title-font text-center">sale</figure>
-						<div class="product-icon absolute text-center">
-							<form method="post" action="/cart/add" enctype="multipart/form-data" class="inline-block icon-addcart">
-  							  <input type="hidden" name="id" value="" />
-  							  <button type="submit" name="add" class="enj-add-to-cart-btn btn-default"><i class="ti-bag"></i></button>
-  							</form>
-  							<a href="#" class="icon-heart inline-block"><i class="ti-heart"></i></a>
-  							<a href="#" class="engoj_btn_quickview icon-quickview inline-block" title="quickview">
-      						  <i class="ti-more-alt"></i>
-      						</a>
-						</div>
-					</div>
-					<div class="info-product text-center">
-						<h4 class="des-font capital title-product space_top_20"><a href="#">embossed backpack in brown</a></h4>
-						<p class="number-font"><span class="price">$123.00</span></p>
-					</div>
-				</div>
-				<!--  -->
-				<div class="product">
-					<div class="img-product relative">
-						<a href="#"><img src="{!! asset('asset/img/product_1.jpg') !!}" class="img-responsive" alt=""></a>
-						<figure class="absolute uppercase label-sale title-font text-center">sale</figure>
-						<div class="product-icon absolute text-center">
-							<form method="post" action="/cart/add" enctype="multipart/form-data" class="inline-block icon-addcart">
-  							  <input type="hidden" name="id" value="" />
-  							  <button type="submit" name="add" class="enj-add-to-cart-btn btn-default"><i class="ti-bag"></i></button>
-  							</form>
-  							<a href="#" class="icon-heart inline-block"><i class="ti-heart"></i></a>
-  							<a href="#" class="engoj_btn_quickview icon-quickview inline-block" title="quickview">
-      						  <i class="ti-more-alt"></i>
-      						</a>
-						</div>
-					</div>
-					<div class="info-product text-center">
-						<h4 class="des-font capital title-product space_top_20"><a href="#">embossed backpack in brown</a></h4>
-						<p class="number-font"><span class="price">$123.00</span></p>
-					</div>
-				</div>
-				<!--  -->
-			</div>
 			
 			</div>
 		</div>
 	</div>
+@endif
 <!--  -->
 */ ?>
 @push('script')
