@@ -16,7 +16,9 @@ $( document ).on( "click", ".pagination a, .collections-menu .link-collection", 
 		});
 
 		$('.load_feed').html(data).removeClass('content_loader');
-		
+		if($('.open-sidebar-left').attr('data-click-state') == 1){
+			$('.open-sidebar-left').click();
+		}
 		window.history.pushState({urlPath:url}, "Results for `Cats`", url);
 	},
 	beforeSend: function() {

@@ -22,7 +22,7 @@ class Helper
     // }
 
     public static function checkCollectionSlug($slug){
-		$exist = Collection::select('id')->whereNull('deleted_at')->where('status', 1)->where('slug',$slug)->first();
+		$exist = Collection::select('id','slug','title')->whereNull('deleted_at')->where('status', 1)->where('slug',$slug)->first();
         if($exist)return array('id'=>$exist->id);
         return false;
     }

@@ -132,6 +132,11 @@
 		
 	</div> -->
 </body>
+@if($menu == 'shop')
+<div class="open-sidebar-left fixed" data-click-state="0">
+	<i class="ti-angle-right"></i>
+</div>
+@endif
 <script src="{{ asset('asset/js/jquery-3.3.1.min.js') }}" defer=""></script>
 <script src="{{ asset('asset/js/bootstrap.min.js') }}" defer=""></script>
 <script src="{{ asset('asset/js/slick.min.js') }}" defer=""></script>

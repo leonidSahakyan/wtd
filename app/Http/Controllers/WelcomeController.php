@@ -18,13 +18,16 @@ class WelcomeController extends Controller
 		$query = DB::table('product');
         $query->select('product.id','title','slug','price','description','images.filename as file_name','images.ext as ext');
             
+        $collection = false;
         if($id){
+            // $collection = $collections = DB::table('collections')->select('id','title', 'slug')->whereNull('deleted_at')->where('status',1)->first();
             $query->where('product.parent_id',$id);
         }
         $query->where('status',1)->where('featured',1)->whereNull('product.deleted_at');
         $query->join('images', 'images.id', '=', 'product.image_id');
         $feed = $query->orderBy('id', 'DESC')->paginate(9);
 
+        view()->share('id', $id);
         view()->share('feed', $feed);
 
         if($this->request->ajax()){
