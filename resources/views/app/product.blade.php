@@ -147,7 +147,7 @@
 					@foreach($related as $rel)
 					<div class="product">
 						<div class="img-product relative">
-							<a href="{{route('product',['slug'=>$product->slug])}}"><img src="{{asset('images/productList/'.$rel->file_name.'.'.$rel->ext)}}" class="img-responsive" alt="{{$product->title}}"></a>
+							<a href="{{route('product',['slug'=>$rel->slug])}}"><img src="{{asset('images/productList/'.$rel->file_name.'.'.$rel->ext)}}" class="img-responsive" alt="{{$product->title}}"></a>
 							<!-- <figure class="absolute uppercase label-new title-font text-center">new</figure>
 							<div class="product-icon text-center absolute">
 								<form method="post" action="/cart/add" enctype="multipart/form-data" class="inline-block icon-addcart">
@@ -161,8 +161,8 @@
 							</div> -->
 						</div>
 						<div class="info-product text-center">
-							<h4 class="des-font capital title-product space_top_20"><a href="{{route('product',['slug'=>$product->slug])}}">{{$product->title}}</a></h4>
-							<p class="number-font price-product"><span class="price">${{$product->price}}.00</span></p>
+							<h4 class="des-font capital title-product space_top_20"><a href="{{route('product',['slug'=>$rel->slug])}}">{{$rel->title}}</a></h4>
+							<p class="number-font price-product"><span class="price">${{$rel->price}}.00</span></p>
 						</div>
 					</div>
 					<!--  -->

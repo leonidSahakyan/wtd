@@ -110,7 +110,7 @@ class WelcomeController extends Controller
         }
         // $imagesJson = json_decode($imagesArray) ? json_decode($imagesArray) : [];
         view()->share('menu', false);
-        
+
         $related = DB::table('product')->select('title','price','slug','images.filename as file_name','images.ext as ext')
         ->where('product.parent_id',$product->parent_id)->where('product.id','!=',$id)->where('status',1)->whereNull('deleted_at')
         ->leftJoin('images','images.id','=','product.image_id')->inRandomOrder()->limit(7)->get();
