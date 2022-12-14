@@ -34,7 +34,11 @@ $( document ).on( "click", ".pagination a, .collections-menu .link-collection", 
 		if($('.open-sidebar-left').attr('data-click-state') == 1){
 			$('.open-sidebar-left').click();
 		}
-		window.history.pushState({urlPath:url}, "Results for `Cats`", url);
+		// history.pushState({
+		// 	url: url,
+		// 	title: title
+		// }, title, url);
+		// window.history.pushState({urlPath:url}, "Results for `Cats`", url);
 	},
 	beforeSend: function() {
 		$('.load_feed').addClass('content_loader');
