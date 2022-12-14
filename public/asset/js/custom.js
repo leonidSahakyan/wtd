@@ -2,6 +2,11 @@ $( document ).on( "click", ".pagination a, .collections-menu .link-collection", 
 	e.preventDefault();
 	var url = $(this).attr('href');
 
+	if($(this).hasClass('link-collection')){
+		$('.collections-menu .link-collection').removeClass('active')
+		$(this).addClass('active')
+	}
+	
 	$.ajax({
 	url: url,
 	data: {},
@@ -10,6 +15,16 @@ $( document ).on( "click", ".pagination a, .collections-menu .link-collection", 
 			data = data.replace("product_item", "product_item product-list")	
 		}
 		
+		// var element = document.getElementById('targetElement');
+		// var headerOffset = 45;
+		// var elementPosition = element.getBoundingClientRect().top;
+		// var offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+	
+		// window.scrollTo({
+		// 	top: offsetPosition,
+		// 	behavior: "smooth"
+		// });
+
 		$('html, body').animate({
 			scrollTop: $('.load_feed').offset().top -300
 		}, 500, function(){

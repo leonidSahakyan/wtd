@@ -18,9 +18,7 @@ class WelcomeController extends Controller
 		$query = DB::table('product');
         $query->select('product.id','title','slug','price','description','images.filename as file_name','images.ext as ext');
             
-        $collection = false;
         if($id){
-            // $collection = $collections = DB::table('collections')->select('id','title', 'slug')->whereNull('deleted_at')->where('status',1)->first();
             $query->where('product.parent_id',$id);
         }
         $query->where('status',1)->where('featured',1)->whereNull('product.deleted_at');
@@ -42,11 +40,14 @@ class WelcomeController extends Controller
         }
 
         $metaModel = new Meta();
+        $collectionId = false;
         if($id){
-            $meta = $metaModel->getMetaCollection($id);
+            $collectionId = $id['id'];
+            $meta = $metaModel->getMetaCollection($collectionId);
         }else{
             $meta = $metaModel->getMeta('shop');
         }
+		view()->share('collectionId', $collectionId);
 		view()->share('meta', $meta);
 
         view()->share('collections', $collections);

@@ -17,13 +17,13 @@
             <ul class="category margin_bottom_70">
             	<li><h1 class="title-font title">Collections</h1></li>
                 @foreach($collections as $collection)
-            	<li><a href="{{ route('collection', ['slug'=>$collection->slug])}}" class="des-font link-collection">{{$collection->title}} ({{$collection->items_count}})</a></li>
+            	<li><a href="{{ route('collection', ['slug'=>$collection->slug])}}" class="des-font @if($collectionId == $collection->id) active @endif link-collection">{{$collection->title}} ({{$collection->items_count}})</a></li>
                 @endforeach
             </ul>
             @endif
 		</div>
 		<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 content-shop">
-			<div class="row btn-function-shop">
+			<div class="row btn-function-shop" id="nav-shop">
 				<div class="col-lg-7 col-md-6 col-sm-6 col-xs-6 margin_bottom_50">
 					<!-- <span class="des-font showing hidden-xs">Showing 1–9 of 50 results</span> -->
 					<button class="active" id="btn-grid" style="padding-left:0;"><i class="ti-layout-grid3-alt"></i></button>
