@@ -15,6 +15,8 @@ class WelcomeController extends Controller
 	}
     
     public function shop($id){
+        $id = $id ? (int)$id['id'] : false; 
+
 		$query = DB::table('product');
         $query->select('product.id','title','slug','price','description','images.filename as file_name','images.ext as ext');
             
@@ -84,6 +86,7 @@ class WelcomeController extends Controller
 
     }
     public function product($id){
+        $id = $id ? (int)$id['id'] : false; 
         $product = DB::table('product')->where('id',$id)->where('status',1)->whereNull('deleted_at')->first();
         $collection = DB::table('collections')->where('id',$product->parent_id)->first();
         $product->sizes = json_decode($product->sizes) ? json_decode($product->sizes) : []; 
@@ -108,9 +111,8 @@ class WelcomeController extends Controller
         // $imagesJson = json_decode($imagesArray) ? json_decode($imagesArray) : [];
         view()->share('menu', false);
         
-        $related = DB::table('product')->select('title','price','slug','images.filename as file_name','images.ext as ext')->where('product.parent_id',$product->id)->where('product.id','!=',$id)->where('status',1)->whereNull('deleted_at')
-        ->leftJoin('images','images.id','=','product.image_id')
-        ->orderBy('product.ordering','DESC')->inRandomOrder()->limit(7)->get();
+        $related = DB::table('product')->select('title','price','slug','images.filename as file_name','images.ext as ext')->where('product.parent_id',$product->parent_id)->where('product.id','!=',$id)->where('status',1)->whereNull('deleted_at')
+        ->leftJoin('images','images.id','=','product.image_id')->inRandomOrder()->limit(7)->get();
 
         $metaModel = new Meta();
 		$meta = $metaModel->getMetaProduct($id);
