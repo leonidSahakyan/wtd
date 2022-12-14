@@ -38,7 +38,10 @@ $( document ).on( "click", ".pagination a, .collections-menu .link-collection", 
 		// 	url: url,
 		// 	title: title
 		// }, title, url);
-		// window.history.pushState({urlPath:url}, "Results for `Cats`", url);
+		// window.history.pushState(window, false, url);
+		// window.history.pushState({},"Test",url);
+		// window.history.pushState({urlPath:url},"",url)
+		// window.history.pushState("", "", url);
 	},
 	beforeSend: function() {
 		$('.load_feed').addClass('content_loader');
